@@ -46,6 +46,7 @@
 ### 景點選擇輸出 attraction_selector_output/
 - `attraction_selector_output/attractions.html` - 候選景點清單（多功能互動網頁）
 - `attraction_selector_output/foods.html` - 美食選擇器（類似attractions.html的互動分頁）
+- `attraction_selector_output/candidates.html` - 候選清單（薈萃已選的景點和美食）
 
 **attractions.html 功能說明（請勿移除）**：
 - 資料來源：景點資料內嵌於 HTML 中的 JavaScript `attractions` 陣列
@@ -54,6 +55,7 @@
 - 標籤系統：所有標籤都有顏色底色，支援多選（需同時滿足所有選中的標籤）
 - 地圖連結：表格檢視有 Google Maps 📍 欄位
 - 選擇功能：可勾選景點加入已選清單，支援匯出 JSON / 複製名稱
+- localStorage：選擇會自動保存到 localStorage，跨分頁可見
 - 重要：修改 HTML 時請勿移除這些功能的核心 JavaScript 邏輯
 
 **foods.html 功能說明（請勿移除）**：
@@ -63,6 +65,15 @@
 - 標籤系統：所有標籤都有顏色底色，支援多選（需同時滿足所有選中的標籤）
 - 價位標籤：自動判斷平價/中價位/高價位
 - 地圖連結：表格檢視有 Google Maps 📍 欄位
+- localStorage：選擇會自動保存到 localStorage，跨分頁可見
+- 重要：修改 HTML 時請勿移除這些功能的核心 JavaScript 邏輯
+
+**candidates.html 功能說明（請勿移除）**：
+- 資料來源：從 attractions.html 和 foods.html 的 localStorage 讀取已選項目
+- 顯示類別：景點（綠色邊框）和美食（橙色邊框）混合顯示
+- 篩選功能：按類別（全部/僅景點/僅美食）、按城市/地區
+- 移除功能：可單獨移除不需要的項目，或清除全部
+- 匯出功能：可匯出 JSON 格式的完整清單（含匯出時間）
 - 重要：修改 HTML 時請勿移除這些功能的核心 JavaScript 邏輯
 
 ### 資料目錄 data/

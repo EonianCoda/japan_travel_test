@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>候選清單 - 大阪・京都之旅</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; padding: 20px; }
+h1 { text-align: center; color: #333; margin-bottom: 20px; }
+
+.nav-links { text-align: center; margin-bottom: 20px; }
+.nav-links a { color: #4CAF50; text-decoration: none; margin: 0 10px; font-size: 14px; }
+.nav-links a:hover { text-decoration: underline; }
+.nav-links span { color: #999; }
+
+.stats { background: white; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+.stats-info { font-size: 16px; color: #333; }
+.stats-info span { font-weight: bold; color: #4CAF50; }
+.stats-actions button { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; margin-right: 10px; }
+.btn-clear { background: #f44336; color: white; }
+.btn-clear:hover { background: #d32f2f; }
+.btn-export { background: #4CAF50; color: white; }
+.btn-export:hover { background: #45a049; }
+
+.filter-bar { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.filter-group { display: flex; align-items: center; gap: 5px; }
+.filter-group label { font-weight: 500; font-size: 14px; }
+.filter-group select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+
+.items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 15px; }
+.item-card { background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: relative; }
+.item-card.attraction { border-left: 4px solid #4CAF50; }
+.item-card.food { border-left: 4px solid #FF9800; }
+.item-card.removing { opacity: 0.5; }
+
+.item-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px; }
+.item-header h3 { font-size: 16px; color: #333; margin: 0; }
+.item-header h3 a { color: inherit; text-decoration: none; }
+.item-header h3 a:hover { text-decoration: underline; }
+.item-type { font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 500; }
+.item-type.attraction { background: #e8f5e9; color: #2e7d32; }
+.item-type.food { background: #fff3e0; color: #e65100; }
+
+.item-remove { background: none; border: none; color: #999; cursor: pointer; font-size: 18px; padding: 2px 6px; }
+.item-remove:hover { color: #f44336; }
+
+.item-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.tag { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+
+.item-details { font-size: 13px; color: #666; line-height: 1.6; }
+.item-details strong { color: #555; }
+
+.item-price { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background: #c8e6c9; color: #2e7d32; margin-top: 5px; }
+.item-price.high { background: #ffcdd2; color: #c62828; }
+.item-price.med { background: #fff9c4; color: #f57f17; }
+
+.empty-state { text-align: center; padding: 60px 20px; background: white; border-radius: 8px; }
+.empty-state h2 { color: #999; margin-bottom: 15px; }
+.empty-state p { color: #bbb; margin-bottom: 20px; }
+.empty-state a { color: #4CAF50; text-decoration: none; }
+.empty-state a:hover { text-decoration: underline; }
+
+.result-box { margin-top: 20px; padding: 15px; background: white; border-radius: 8px; display: none; }
+.result-box.show { display: block; }
+.result-box pre { white-space: pre-wrap; font-size: 13px; max-height: 400px; overflow-y: auto; }
+
+footer { text-align: center; margin-top: 30px; color: #999; font-size: 12px; }
+</style>
+</head>
+<body>
+<h1>候選清單</h1>
+
+<div class="nav-links">
+    <a href="attractions.html">← 景點選擇器</a>
+    <span>|</span>
+    <a href="foods.html">美食選擇器 →</a>
+</div>
+
+<div class="stats">
+    <div class="stats-info">
+        已選擇 <span id="totalCount">0</span> 個項目（<span id="attractionCount">0</span> 個景點、<span id="foodCount">0</span> 個美食）
+    </div>
+    <div class="stats-actions">
+        <button class="btn-clear" onclick="clearAll()">清除全部</button>
+        <button class="btn-export" onclick="exportSelected()">匯出 JSON</button>
+    </div>
+</div>
+
+<div class="filter-bar">
+    <div class="filter-group">
+        <label>類別：</label>
+        <select id="typeFilter" onchange="renderItems()">
+            <option value="all">全部</option>
+            <option value="attraction">僅景點</option>
+            <option value="food">僅美食</option>
+        </select>
+    </div>
+    <div class="filter-group">
+        <label>城市/地區：</label>
+        <select id="areaFilter" onchange="renderItems()">
+            <option value="all">全部</option>
+            <option value="京都">京都</option>
+            <option value="大阪">大阪</option>
+            <option value="奈良">奈良</option>
+            <option value="關西延伸">關西延伸</option>
+        </select>
+    </div>
+</div>
+
+<div id="itemsContainer" class="items-grid"></div>
+
+<div class="result-box" id="resultBox">
+    <pre id="resultText"></pre>
+</div>
+
+<footer>用 Claude Code 整理 | 2026年5月</footer>
+
+<script>
+// 從 localStorage 讀取選擇
+function getSelectedAttractions() {
+    return JSON.parse(localStorage.getItem('selectedAttractions') || '[]');
+}
+
+function getSelectedFoods() {
+    return JSON.parse(localStorage.getItem('selectedFoods') || '[]');
+}
+
+function saveSelectedAttractions(data) {
+    localStorage.setItem('selectedAttractions', JSON.stringify(data));
+}
+
+function saveSelectedFoods(data) {
+    localStorage.setItem('selectedFoods', JSON.stringify(data));
+}
+
+function renderItems() {
+    const container = document.getElementById('itemsContainer');
+    const typeFilter = document.getElementById('typeFilter').value;
+    const areaFilter = document.getElementById('areaFilter').value;
+
+    const attractions = getSelectedAttractions();
+    const foods = getSelectedFoods();
+
+    let items = [];
+
+    // 轉換景點
+    attractions.forEach(a => {
+        items.push({
+            type: 'attraction',
+            id: a.id || a.name,
+            name: a.name,
+            city: a.city,
+            tags: a.tags || [],
+            features: a.features || '',
+            price: a.price || '免費',
+            duration: a.duration || '',
+            hours: a.hours || '',
+            transport: a.transport || '',
+            link: a.link || ''
+        });
+    });
+
+    // 轉換美食
+    foods.forEach(f => {
+        items.push({
+            type: 'food',
+            id: f.id || f.name,
+            name: f.name,
+            city: f.area,
+            tags: f.type || [],
+            features: f.features || '',
+            price: f.price || '',
+            hours: f.hours || '',
+            address: f.address || '',
+            link: f.link || ''
+        });
+    });
+
+    // 篩選
+    if (typeFilter !== 'all') {
+        items = items.filter(item => item.type === typeFilter);
+    }
+    if (areaFilter !== 'all') {
+        items = items.filter(item => item.city === areaFilter);
+    }
+
+    // 更新計數
+    document.getElementById('totalCount').textContent = items.length;
+    document.getElementById('attractionCount').textContent = attractions.length;
+    document.getElementById('foodCount').textContent = foods.length;
+
+    if (items.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state" style="grid-column: 1/-1;">
+                <h2>尚無選擇的項目</h2>
+                <p>到景點選擇器或美食選擇器勾選感興趣的項目</p>
+                <a href="attractions.html">前往景點選擇器</a>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = items.map(item => {
+        const tagsHtml = item.tags.map(t => `<span class="tag" style="background: ${getTagColor(t)}; color: ${getTagTextColor(t)};">${t}</span>`).join('');
+        const priceClass = getPriceClass(item.price);
+        const mapsUrl = item.link || 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(item.name + ' ' + (item.city || ''));
+
+        let details = '';
+        if (item.type === 'attraction') {
+            details = `
+                ${item.duration ? '<strong>停留：</strong>' + item.duration + '<br>' : ''}
+                ${item.hours ? '<strong>時間：</strong>' + item.hours + '<br>' : ''}
+                ${item.transport ? '<strong>交通：</strong>' + item.transport : ''}
+            `;
+        } else {
+            details = `
+                ${item.hours ? '<strong>時間：</strong>' + item.hours + '<br>' : ''}
+                ${item.address ? '<strong>地址：</strong>' + item.address : ''}
+            `;
+        }
+
+        return `
+            <div class="item-card ${item.type}" data-id="${item.id}" data-type="${item.type}">
+                <div class="item-header">
+                    <h3><a href="${mapsUrl}" target="_blank">${item.name}</a></h3>
+                    <span class="item-type ${item.type}">${item.type === 'attraction' ? '景點' : '美食'}</span>
+                </div>
+                <div class="item-tags">${tagsHtml}</div>
+                <div class="item-details">
+                    ${item.features || ''}
+                    ${details}
+                    ${item.price ? '<div class="item-price ' + priceClass + '">' + item.price + '</div>' : ''}
+                </div>
+                <button class="item-remove" onclick="removeItem('${item.type}', '${item.id.replace(/'/g, "\\'")}')" title="移除">✕</button>
+            </div>
+        `;
+    }).join('');
+}
+
+function getTagColor(tag) {
+    const colors = {
+        '京都': '#e8f5e9', '大阪': '#fff3e0', '奈良': '#f3e5f5', '關西延伸': '#e3f2fd',
+        '必去': '#ffcdd2', '賞楓': '#ffccbc', '賞花': '#f8bbd9', '夜景': '#e1bee7',
+        '美食': '#d7f9d0', '購物': '#fff9c4', '神社寺院': '#ffe0b2',
+        '文化體驗': '#b3e5fc', '體驗': '#c8e6c9', '自然': '#c8e6c9',
+        '免費': '#c8e6c9', '世界遺產': '#ffecb3', '主題樂園': '#e1f5fe',
+        'ACG/玩具': '#f3e5f5', '溫泉': '#e0f7fa',
+        '章魚燒': '#ffcdd2', '拉麵': '#ffe0b2', '燒肉': '#f3e5f5',
+        '甜點': '#f8bbd9', '海鮮': '#b3e5fc', '大阪燒': '#ffccbc',
+        '抹茶': '#d7f9d0', '咖啡': '#fff9c4'
+    };
+    return colors[tag] || '#f5f5f5';
+}
+
+function getTagTextColor(tag) {
+    const darkColors = ['賞楓', '賞花', '美食', '免費', '體驗', '自然', '抹茶', '世界遺產'];
+    return darkColors.includes(tag) ? '#1b5e20' : '#616161';
+}
+
+function getPriceClass(price) {
+    if (!price) return '';
+    if (price.includes('¥3,000') || price.includes('¥4,000') || price.includes('¥5,000') ||
+        price.includes('¥8,000') || price.includes('¥10,000') || price.includes('¥12,000')) {
+        return 'high';
+    }
+    if (price.includes('¥800') || price.includes('¥900') || price.includes('¥1,000') ||
+        price.includes('¥1,200') || price.includes('¥1,500') || price.includes('¥2,000')) {
+        return 'med';
+    }
+    return '';
+}
+
+function removeItem(type, id) {
+    if (type === 'attraction') {
+        const attractions = getSelectedAttractions().filter(a => (a.id || a.name) !== id);
+        saveSelectedAttractions(attractions);
+    } else {
+        const foods = getSelectedFoods().filter(f => (f.id || f.name) !== id);
+        saveSelectedFoods(foods);
+    }
+    renderItems();
+}
+
+function clearAll() {
+    if (confirm('確定要清除所有選擇嗎？')) {
+        localStorage.removeItem('selectedAttractions');
+        localStorage.removeItem('selectedFoods');
+        renderItems();
+    }
+}
+
+function exportSelected() {
+    const resultBox = document.getElementById('resultBox');
+    const resultText = document.getElementById('resultText');
+
+    const data = {
+        attractions: getSelectedAttractions(),
+        foods: getSelectedFoods(),
+        exportedAt: new Date().toISOString()
+    };
+
+    resultText.textContent = JSON.stringify(data, null, 2);
+    resultBox.classList.add('show');
+}
+
+// 初始化
+renderItems();
+</script>
+</body>
+</html>

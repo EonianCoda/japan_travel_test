@@ -169,6 +169,7 @@ footer { text-align: center; margin-top: 30px; color: #999; font-size: 12px; }
 </div>
 
 <footer style="text-align: center; margin-top: 30px; color: #999; font-size: 12px;">
+    <a href="candidates.html" style="color: #4CAF50; text-decoration: none; margin-right: 15px;">📋 候選清單</a>
     <a href="foods.html" style="color: #FF9800; text-decoration: none;">→ 前往美食選擇器</a>
 </footer>
 
@@ -188,7 +189,22 @@ function handleCheckboxChange(name, checked) {
     } else {
         selectedSet.delete(name);
     }
+    saveSelectedToStorage();
     updateStats();
+}
+
+function saveSelectedToStorage() {
+    const selectedData = attractions.filter(a => selectedSet.has(a.name));
+    localStorage.setItem('selectedAttractions', JSON.stringify(selectedData));
+}
+
+function exportSelected() {
+    const selected = getSelectedAttractions();
+    const resultBox = document.getElementById('resultBox');
+    const resultText = document.getElementById('resultText');
+    const selectedData = attractions.filter(a => selected.includes(a.name));
+    resultText.textContent = JSON.stringify(selectedData, null, 2);
+    resultBox.classList.add('show');
 }
 
 function showCardView() {
@@ -344,12 +360,8 @@ function handleTagChange(checkbox) {
     filterAttractions();
 }
 
-function getSelectedAttractions() {
-    return Array.from(selectedSet);
-}
-
 function exportSelected() {
-    const selected = getSelectedAttractions();
+    const selected = Array.from(selectedSet);
     const resultBox = document.getElementById('resultBox');
     const resultText = document.getElementById('resultText');
     const selectedData = attractions.filter(a => selected.includes(a.name));
@@ -358,7 +370,7 @@ function exportSelected() {
 }
 
 function copySelected() {
-    const selected = getSelectedAttractions();
+    const selected = Array.from(selectedSet);
     const text = selected.join('\n');
     navigator.clipboard.writeText(text).then(() => {
         const btn = document.querySelector('.btn-copy');
@@ -373,6 +385,11 @@ document.getElementById('cityFilter').addEventListener('change', () => {
 });
 
 // Initialize
+function loadSavedSelections() {
+    const saved = JSON.parse(localStorage.getItem('selectedAttractions') || '[]');
+    saved.forEach(a => selectedSet.add(a.name));
+}
+loadSavedSelections();
 updateTagOptions();
 filterAttractions();
 </script>
