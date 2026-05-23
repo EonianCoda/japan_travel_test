@@ -45,13 +45,24 @@
 
 ### 景點選擇輸出 attraction_selector_output/
 - `attraction_selector_output/attractions.html` - 候選景點清單（多功能互動網頁）
+- `attraction_selector_output/foods.html` - 美食選擇器（類似attractions.html的互動分頁）
 
 **attractions.html 功能說明（請勿移除）**：
 - 資料來源：景點資料內嵌於 HTML 中的 JavaScript `attractions` 陣列
-- 篩選功能：城市（單選）、標籤（多選）、免費景點、已選景點、文字搜尋
+- 篩選功能：城市（單選）、標籤（多選 AND 邏輯）、免費景點、已選景點、文字搜尋
 - 檢視模式：卡片視圖 / 表格視圖，可切換
-- 標籤系統：所有標籤都有顏色底色，支援多選（OR 邏輯）
+- 標籤系統：所有標籤都有顏色底色，支援多選（需同時滿足所有選中的標籤）
+- 地圖連結：表格檢視有 Google Maps 📍 欄位
 - 選擇功能：可勾選景點加入已選清單，支援匯出 JSON / 複製名稱
+- 重要：修改 HTML 時請勿移除這些功能的核心 JavaScript 邏輯
+
+**foods.html 功能說明（請勿移除）**：
+- 資料來源：美食店家資料內嵌於 HTML 中的 JavaScript `foods` 陣列
+- 結構與 attractions.html 類似，便於同步操作
+- 篩選功能：地區（單選）、類別標籤（多選 AND 邏輯）、平價、已選、文字搜尋
+- 標籤系統：所有標籤都有顏色底色，支援多選（需同時滿足所有選中的標籤）
+- 價位標籤：自動判斷平價/中價位/高價位
+- 地圖連結：表格檢視有 Google Maps 📍 欄位
 - 重要：修改 HTML 時請勿移除這些功能的核心 JavaScript 邏輯
 
 ### 資料目錄 data/

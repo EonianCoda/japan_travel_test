@@ -228,7 +228,7 @@
       "area": "定番",
       "category": "定番景點",
       "features": "紅楓水路、水路閣",
-      "price": "¥600（三門或方丈庭園）",
+      "price": "¥800（三門或方丈庭園）",
       "duration": "1.5小時",
       "address": "京都市左京區南禪寺町",
       "hours": "3-11月 8:40-17:00 / 12-2月 8:40-16:30",
@@ -896,7 +896,7 @@
       "area": "定番",
       "category": "定番景點",
       "features": "枯山水名家、Loy Solitude",
-      "price": "¥500",
+      "price": "¥600",
       "duration": "1小時",
       "address": "京都市右京區龍安寺町",
       "hours": "3-11月 8:00-17:00 / 12-2月 8:30-16:30",
@@ -1368,7 +1368,7 @@
       "area": "市中心",
       "category": "市中心",
       "features": "復古街區、串炸 Ike炸豬排",
-      "price": "¥900（登塔）",
+      "price": "¥1,500（大人）",
       "duration": "1.5小時",
       "address": "大阪市浪速區恵美須東1-18-6",
       "hours": "9:00-21:45",
@@ -1444,20 +1444,6 @@
       "category": "動漫聖地",
       "features": "動漫聖地巡禮",
       "duration": "2-3小時",
-      "tags": [
-        "大阪",
-        "ACG/玩具"
-      ]
-    },
-    {
-      "id": "usj",
-      "name": "環球影城",
-      "city": "大阪",
-      "area": "環球影城",
-      "category": "主題樂園",
-      "price": "¥8,900",
-      "link": "https://www.usj.co.jp/",
-      "features": "25週年慶、咚奇剛國度、超級任天堂世界",
       "tags": [
         "大阪",
         "ACG/玩具"
@@ -2032,6 +2018,43 @@
       "tags": [
         "關西延伸",
         "夜景"
+      ]
+    },
+    {
+      "id": "tennoji-zoo",
+      "name": "天王寺動物園",
+      "city": "大阪",
+      "area": "其他",
+      "category": "其他區域",
+      "features": "百年歷史、市中心親子、熊貓、長頸鹿",
+      "price": "¥500",
+      "duration": "2小時",
+      "address": "大阪市天王寺區天才庵町",
+      "hours": "9:30-17:00（週一休園）",
+      "transport": "JR「天王寺駅」步行5分",
+      "tags": [
+        "大阪",
+        "體驗",
+        "主題樂園"
+      ]
+    },
+    {
+      "id": "shinsaibashi-parco",
+      "name": "心齋橋 PARCO",
+      "city": "大阪",
+      "area": "市中心",
+      "category": "市中心",
+      "features": "POP CULTURE動漫層：橡子共和國、哥吉拉、超人力霸王、卡普空商店、蠟筆小新、刀劍亂舞官方店、Chiikawa",
+      "price": "免費（購物另計）",
+      "duration": "1-2小時",
+      "address": "大阪市中央區心齋橋筋1-8-3",
+      "hours": "11:00-21:00",
+      "transport": "Metro「心齋橋駅」步行1分",
+      "link": "https://www.parco.co.jp/",
+      "tags": [
+        "大阪",
+        "購物",
+        "ACG/玩具"
       ]
     }
   ]

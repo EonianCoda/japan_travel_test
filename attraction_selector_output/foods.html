@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大阪・京都美食選擇器</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; padding: 20px; }
+h1 { text-align: center; color: #333; margin-bottom: 20px; }
+
+.view-toggle { text-align: center; margin-bottom: 20px; }
+.view-toggle button { padding: 10px 20px; margin: 0 5px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.view-toggle button.active { background: #FF9800; color: white; border-color: #FF9800; }
+
+.filters { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.filter-group { display: flex; align-items: center; gap: 5px; }
+.filter-group label { font-weight: 500; font-size: 14px; }
+.filter-group select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+.filter-group input[type="checkbox"] { width: 16px; height: 16px; }
+
+.stats { background: white; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; color: #666; }
+
+/* Card View */
+.foods-grid { display: none; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px; }
+.foods-grid.show { display: grid; }
+
+.card { background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.2s; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+.card.selected { border: 2px solid #FF9800; background: #fff8f0; }
+
+.card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px; }
+.card h3 { font-size: 16px; color: #333; margin-right: 10px; }
+.card h3 a { color: inherit; text-decoration: none; }
+.card h3 a:hover { text-decoration: underline; }
+
+.card-header input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; flex-shrink: 0; }
+
+.tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.tag { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+.tag.city-osaka { background: #fff3e0; color: #e65100; }
+.tag.city-kyoto { background: #e8f5e9; color: #2e7d32; }
+.tag.city-nara { background: #f3e5f5; color: #7b1fa2; }
+.tag.area-dotonbori { background: #ffcdd2; color: #c62828; }
+.tag.area-shinsaibashi { background: #f8bbd9; color: #880e4f; }
+.tag.area-kuromon { background: #e1bee7; color: #6a1b9a; }
+.tag.area-gion { background: #d7f9d0; color: #2e7d32; }
+.tag.area-arashiyama { background: #fff9c4; color: #f57f17; }
+.tag.type-ramen { background: #ffe0b2; color: #e65100; }
+.tag.type-seafood { background: #b3e5fc; color: #0277bd; }
+.tag.type-meat { background: #f3e5f5; color: #7b1fa2; }
+.tag.type-sweets { background: #f8bbd9; color: #880e4f; }
+.tag.type-local { background: #ffccbc; color: #bf360c; }
+.tag.price-low { background: #c8e6c9; color: #2e7d32; }
+.tag.price-med { background: #fff9c4; color: #f57f17; }
+.tag.price-high { background: #ffcdd2; color: #c62828; }
+
+.features { color: #666; font-size: 14px; margin-bottom: 10px; line-height: 1.4; }
+
+.details { font-size: 13px; color: #757575; line-height: 1.6; }
+.details strong { color: #555; }
+
+/* Table View */
+.foods-table { display: none; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.foods-table.show { display: table; width: 100%; }
+
+.foods-table table { width: 100%; border-collapse: collapse; }
+
+.foods-table th, .foods-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
+
+.foods-table th { background: #f5f5f5; font-weight: 600; color: #333; }
+
+.foods-table tr:hover { background: #fff8f0; }
+
+.foods-table td input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+
+.foods-table .tag { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; }
+
+/* Export Section */
+.export-section { background: white; padding: 20px; border-radius: 8px; margin-top: 20px; text-align: center; }
+.export-section button { padding: 12px 24px; font-size: 16px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+.btn-export { background: #FF9800; color: white; }
+.btn-export:hover { background: #F57C00; }
+.btn-copy { background: #2196F3; color: white; }
+.btn-copy:hover { background: #1976D2; }
+
+.result-box { margin-top: 15px; padding: 15px; background: #f5f5f5; border-radius: 4px; text-align: left; max-height: 200px; overflow-y: auto; display: none; }
+.result-box.show { display: block; }
+.result-box pre { white-space: pre-wrap; font-size: 13px; }
+
+footer { text-align: center; margin-top: 30px; color: #999; font-size: 12px; }
+
+.back-link { text-align: center; margin-bottom: 15px; }
+.back-link a { color: #FF9800; text-decoration: none; font-size: 14px; }
+.back-link a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="back-link"><a href="attractions.html">← 返回景點選擇器</a></div>
+
+<h1>大阪・京都美食選擇器</h1>
+
+<div class="view-toggle">
+    <button id="cardViewBtn" class="active" onclick="showCardView()">卡片視圖</button>
+    <button id="tableViewBtn" onclick="showTableView()">表格視圖</button>
+</div>
+
+<div class="filters">
+    <div class="filter-group">
+        <label>地區：</label>
+        <select id="areaFilter" onchange="updateTagOptions(); filterFoods()">
+            <option value="all">全部</option>
+            <option value="大阪">大阪</option>
+            <option value="京都">京都</option>
+            <option value="奈良">奈良</option>
+        </select>
+    </div>
+    <div class="filter-group">
+        <label>類別：</label>
+        <div id="tagFilterContainer" style="display: flex; flex-wrap: wrap; gap: 5px; max-width: 400px;"></div>
+    </div>
+    <div class="filter-group">
+        <label>🔍</label>
+        <input type="text" id="searchInput" placeholder="搜尋店家或料理..." oninput="filterFoods()" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; width: 200px;">
+    </div>
+    <div class="filter-group">
+        <input type="checkbox" id="priceLow" onchange="filterFoods()">
+        <label for="priceLow">平價</label>
+    </div>
+    <div class="filter-group">
+        <input type="checkbox" id="selectedOnly" onchange="filterFoods()">
+        <label for="selectedOnly">只顯示已選</label>
+    </div>
+</div>
+
+<div class="stats">
+    共 <span id="totalCount">0</span> 個美食，已選擇 <span id="selectedCount">0</span> 個
+</div>
+
+<!-- Card View -->
+<div class="foods-grid" id="foodsGrid"></div>
+
+<!-- Table View -->
+<div class="foods-table" id="tableView">
+    <table>
+        <thead>
+            <tr>
+                <th style="width:40px"></th>
+                <th>店家名稱</th>
+                <th>類別</th>
+                <th>特色</th>
+                <th>價位</th>
+                <th>營業時間</th>
+                <th>地址</th>
+                <th style="width:50px">地圖</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+</div>
+
+<div class="export-section">
+    <button class="btn-export" onclick="exportSelected()">匯出已選</button>
+    <button class="btn-copy" onclick="copySelected()">複製選擇</button>
+    <div class="result-box" id="resultBox"><pre id="resultText"></pre></div>
+</div>
+
+<footer>用 Claude Code 整理 | 2026年5月</footer>
+
+<script>
+const foods = [
+    // 大阪・道頓堀
+    { id: "tako", name: "たこ家道頓堀くくる本店", area: "大阪", location: "道頓堀", type: ["章魚燒", "local"], price: "¥500-700", hours: "11:00-22:00", address: "大阪市中央區道頓堀1-2-4", features: "外酥內嫩、漉出高湯", link: "https://www.kukuru.co.jp/" },
+    { id: "tako-acchi", name: "元祖章魚燒あっちち本舖", area: "大阪", location: "道頓堀", type: ["章魚燒", "local"], price: "¥400-600", hours: "11:00-24:00", address: "大阪市中央區道頓堀", features: "傳統口味、外脆內軟" },
+    { id: "kairori", name: "蟹道樂", area: "大阪", location: "道頓堀", type: ["螃蟹", "seafood"], price: "¥3,000-8,000", hours: "11:00-23:00", address: "大阪市中央區道頓堀1-6-4", features: "螃蟹料理、蒸烤焗", link: "https://www.kairori.co.jp/" },
+    { id: "yaege", name: "八重勝", area: "大阪", location: "道頓堀", type: ["串炸", "local"], price: "¥500-1,000", hours: "11:00-22:00", address: "大阪市西城區新世界2-2-9", features: "蓬萊麵衣、傳統串炸" },
+    { id: "daruma", name: "串炸Daruma", area: "大阪", location: "道頓堀", type: ["串炸", "local"], price: "¥500-1,200", hours: "11:00-22:00", address: "大阪市東區道頓堀2-2-32", features: "外脆內嫩、蘸醬一次", link: "https://www.kushikubodaruma.com/" },
+    { id: "kiji", name: "きじ", area: "大阪", location: "道頓堀", type: ["大阪燒", "local"], price: "¥800-1,200", hours: "11:30-21:00", address: "大阪市北區天神橋筋5", features: "現地人愛店、道地", link: "https://www.okonomiyakikiji.com/" },
+    { id: "chobo", name: "千房", area: "大阪", location: "道頓堀", type: ["大阪燒", "local"], price: "¥800-1,200", hours: "11:00-23:00", address: "大阪市江區道頓堀1-5-2", features: "口感多元、選擇多樣" },
+    { id: "goldragon", name: "金龍拉麵", area: "大阪", location: "道頓堀", type: ["拉麵", "ramen"], price: "¥600-900", hours: "24小時", address: "大阪市江區道頓堀1-7-24", features: "豚骨湯底、24小時營業" },
+    { id: "kam座", name: "神座拉麵", area: "大阪", location: "道頓堀", type: ["拉麵", "ramen"], price: "¥700-1,000", hours: "11:00-23:00", address: "大阪市江區道頓堀1-4-15", features: "白菜豚骨、批評屋" },
+    { id: "unari", name: "うまい屋", area: "大阪", location: "道頓堀", type: ["拉麵", "ramen"], price: "¥700-900", hours: "11:30-22:30", address: "大阪市江區道頓堀1-5-11", features: "濃郁豚骨湯頭" },
+    { id: "gyozada", name: "御霊花", area: "大阪", location: "道頓堀", type: ["甜點", "sweets"], price: "¥300-500", hours: "10:00-21:00", address: "大阪市中央區道頓堀1-5-3", features: "網美店、拍照打卡" },
+
+    // 大阪・心齋橋
+    { id: "hokkyokusei", name: "北極星", area: "大阪", location: "心齋橋", type: ["蛋包飯", "local"], price: "¥900-1,500", hours: "11:00-22:00", address: "大阪市中央區心齋橋筋2-3", features: "百年歷史、創始店", link: "https://www.hokkyokusei.com/" },
+    { id: "musou", name: "燒肉無雙武藏", area: "大阪", location: "心齋橋", type: ["燒肉", "meat"], price: "¥2,000-5,000", hours: "17:00-24:00", address: "大阪市中央區心齋橋筋2-2-22", features: "和牛燒肉、高cp值" },
+    { id: "elk", name: "ELK Pancake Cafe", area: "大阪", location: "心齋橋", type: ["鬆餅", "sweets"], price: "¥700-1,200", hours: "10:00-20:00", address: "大阪市中央區南船場3-11-25", features: "厚餅、水果" },
+    { id: "tables", name: "TABLES CAFE", area: "大阪", location: "心齋橋", type: ["鬆餅", "sweets"], price: "¥800-1,300", hours: "10:00-21:00", address: "大阪市中央區南船場2-2-22", features: "水果鬆餅、復古氛圍" },
+    { id: "pablo", name: "PABLO", area: "大阪", location: "心齋橋", type: ["甜點", "sweets"], price: "¥600-1,000", hours: "10:00-22:00", address: "大阪市中央區心齋橋筋1-3-3", features: "半熟起司塔", link: "https://www.pablo3.com/" },
+    { id: "rikuro", name: "rikuro's 爺爺起司蛋糕", area: "大阪", location: "心齋橋", type: ["甜點", "sweets"], price: "¥600-800", hours: "10:00-20:00", address: "大阪市北區天神橋筋6-4-17", features: "現烤起司蛋糕、冷熱皆美味" },
+
+    // 大阪・黑門市場
+    { id: "kuromon-main", name: "黑門市場", area: "大阪", location: "黑門市場", type: ["海鮮", "seafood", "local"], price: "¥500-2,000", hours: "9:00-18:00", address: "大阪市中央區日本橋2-3", features: "大阪人的廚房、海鮮現場吃" },
+    { id: "fugu", name: "河豚火鍋套餐", area: "大阪", location: "黑門市場", type: ["河豚", "seafood"], price: "¥3,000-8,000", hours: "店鋪各異", address: "黑門市場內", features: "專業處理、河豚刺身" },
+    { id: "daikisuisan", name: "大起水產", area: "大阪", location: "臨空城", type: ["壽司", "seafood"], price: "¥800-2,000", hours: "11:00-22:00", address: "臨空城SEACLE 3樓", features: "迴轉壽司、新鮮", link: "https://www.daikisuisan.com/" },
+
+    // 大阪・其他
+    { id: "daiichi", name: "本家第一旭", area: "大阪", location: "大阪", type: ["拉麵", "ramen"], price: "¥600-900", hours: "24小時", address: "大阪市北區天神橋5", features: "久留米豚骨、24小時" },
+    { id: "matsubaru", name: "이블松", area: "大阪", location: "大阪", type: ["豬排", "meat"], price: "¥1,000-2,000", hours: "11:00-21:00", address: "大阪市北區天神橋5", features: "炸豬排、Lunch" },
+    { id: "atsu mono", name: "あつもの小松", area: "大阪", location: "道頓堀", type: ["鰻魚飯", "local"], price: "¥2,000-5,000", hours: "11:00-20:00", address: "大阪市江區道頓堀1-2-3", features: "蒲燒鰻魚飯、關西口味" },
+
+    // 京都・祇園／四條
+    { id: "kyoyakiniku", name: "京燒肉弘", area: "京都", location: "祇園", type: ["燒肉", "meat"], price: "¥3,000-10,000", hours: "17:00-24:00", address: "京都市中區四條祇園町北側", features: "和牛燒肉、品格", link: "https://www.yakinikukou.co.jp/" },
+    { id: "wagyutoku", name: "和牛燒肉徳", area: "京都", location: "祇園", type: ["燒肉", "meat"], price: "¥4,000-12,000", hours: "17:00-24:00", address: "京都市中區四條祇園", features: "A5和牛、單點" },
+    { id: "mokubei", name: "杢兵衛", area: "京都", location: "祇園", type: ["京料理", "local"], price: "¥5,000-15,000", hours: "12:00-14:00；17:00-22:00", address: "京都市中區四條祇園", features: "創作料理、京料理", link: "https://www.mokubei.com/" },
+    { id: "unagi", name: "祇園鰻川藤", area: "京都", location: "祇園", type: ["鰻魚飯", "local"], price: "¥2,000-6,000", hours: "11:30-20:00", address: "京都市東區祇園町南側", features: "關西style蒲燒" },
+    { id: "smartcoffee", name: "Smart Coffee", area: "京都", location: "祇園", type: ["咖啡", "sweets"], price: "¥600-1,200", hours: "8:00-19:00", address: "京都市中區三條87", features: "經典土司、咖啡", link: "https://www.smartcoffee.jp/" },
+    { id: "yojiya", name: "Yojiya Cafe", area: "京都", location: "祇園", type: ["抹茶", "sweets"], price: "¥500-1,200", hours: "10:00-18:00", address: "京都市東區祇園町", features: "抹茶奶油蛋糕捲、抹茶拿鐵", link: "https://www.yojiya.co.jp/" },
+    { id: "gyodontsuya", name: "ぎおん徳屋", area: "京都", location: "祇園", type: ["甜點", "sweets"], price: "¥800-1,500", hours: "12:00-18:00", address: "京都市東區祇園町", features: "德屋本蕨餅、花見こもち", link: "https://www.yachiyo.co.jp/" },
+
+    // 京都・嵐山
+    { id: "obuu", name: "嵐山OBUU", area: "京都", location: "嵐山", type: ["抹茶", "sweets"], price: "¥500-1,000", hours: "10:00-17:00", address: "京都市右京區嵯峨嵐山町", features: "抹茶甜點、名物" },
+    { id: "arabica", name: "% Arabica", area: "京都", location: "嵐山", type: ["咖啡"], price: "¥400-700", hours: "9:00-18:00", address: "京都市右京區嵯峨天龍寺車道町1", features: "咖啡拉花、桂川河景", link: "https://percent-coffee.com/" },
+    { id: "arashiyama-tako", name: "嵐山太郎", area: "京都", location: "嵐山", type: ["章魚燒", "local"], price: "¥400-600", hours: "10:00-19:00", address: "京都市右京區嵯峨嵐山町", features: "嵐山名物、觀光客最愛" },
+
+    // 京都・其他
+    { id: "nihonbarai", name: "日本橋拉麵", area: "京都", location: "京都", type: ["拉麵", "ramen"], price: "¥700-1,000", hours: "11:00-22:00", address: "京都市下京區烏丸五條", features: "久留米豚骨、久留米風" },
+    { id: "tengu", name: "天狗", area: "京都", location: "京都", type: ["拉麵", "ramen"], price: "¥800-1,000", hours: "11:30-14:00；18:00-23:00", address: "京都市下京區四條寺町", features: "雞白湯、沾麵" },
+    { id: "taku", name: "たく", area: "京都", location: "京都", type: ["燒肉", "meat"], price: "¥3,000-8,000", hours: "17:00-23:00", address: "京都市中區木屋町", features: "和牛燒肉、氣氛佳" },
+
+    // 奈良
+    { id: "mochi", name: "奈良老街柿葉壽司", area: "奈良", location: "奈良", type: ["壽司", "local"], price: "¥500-1,000", hours: "店鋪各異", address: "奈良市元和林町", features: "傳統建築、柿葉壽司" }
+];
+
+let currentView = 'card';
+const selectedSet = new Set();
+const selectedTags = new Set();
+
+function getTagClass(tag) {
+    const classes = {
+        'city-osaka': { background: '#fff3e0', color: '#e65100' },
+        'city-kyoto': { background: '#e8f5e9', color: '#2e7d32' },
+        'city-nara': { background: '#f3e5f5', color: '#7b1fa2' },
+        'area-dotonbori': { background: '#ffcdd2', color: '#c62828' },
+        'area-shinsaibashi': { background: '#f8bbd9', color: '#880e4f' },
+        'area-kuromon': { background: '#e1bee7', color: '#6a1b9a' },
+        'area-gion': { background: '#d7f9d0', color: '#2e7d32' },
+        'area-arashiyama': { background: '#fff9c4', color: '#f57f17' },
+        'type-ramen': { background: '#ffe0b2', color: '#e65100' },
+        'type-seafood': { background: '#b3e5fc', color: '#0277bd' },
+        'type-meat': { background: '#f3e5f5', color: '#7b1fa2' },
+        'type-sweets': { background: '#f8bbd9', color: '#880e4f' },
+        'type-local': { background: '#ffccbc', color: '#bf360c' },
+        'price-low': { background: '#c8e6c9', color: '#2e7d32' },
+        'price-med': { background: '#fff9c4', color: '#f57f17' },
+        'price-high': { background: '#ffcdd2', color: '#c62828' }
+    };
+    return classes[tag] || { background: '#f5f5f5', color: '#616161' };
+}
+
+function getPriceClass(price) {
+    if (price.includes("¥3,000") || price.includes("¥4,000") || price.includes("¥5,000") || price.includes("¥8,000") || price.includes("¥10,000") || price.includes("¥12,000") || price.includes("¥15,000")) {
+        return { background: '#ffcdd2', color: '#c62828', label: '高價位' };
+    }
+    if (price.includes("¥800") || price.includes("¥900") || price.includes("¥1,000") || price.includes("¥1,200") || price.includes("¥1,500") || price.includes("¥2,000")) {
+        return { background: '#fff9c4', color: '#f57f17', label: '中價位' };
+    }
+    return { background: '#c8e6c9', color: '#2e7d32', label: '平價' };
+}
+
+function handleCheckboxChange(name, checked) {
+    if (checked) {
+        selectedSet.add(name);
+    } else {
+        selectedSet.delete(name);
+    }
+    updateStats();
+    filterFoods();
+}
+
+function showCardView() {
+    currentView = 'card';
+    document.getElementById('cardViewBtn').classList.add('active');
+    document.getElementById('tableViewBtn').classList.remove('active');
+    document.getElementById('foodsGrid').classList.add('show');
+    document.getElementById('tableView').classList.remove('show');
+}
+
+function showTableView() {
+    currentView = 'table';
+    document.getElementById('tableViewBtn').classList.add('active');
+    document.getElementById('cardViewBtn').classList.remove('active');
+    document.getElementById('foodsGrid').classList.remove('show');
+    document.getElementById('tableView').classList.add('show');
+}
+
+function renderCards(filtered) {
+    const grid = document.getElementById('foodsGrid');
+    grid.innerHTML = filtered.map(f => {
+        const isSelected = selectedSet.has(f.name);
+        const mapsUrl = f.link || 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(f.name);
+        const typeArr = f.type || [];
+        const tagsHtml = typeArr.map(t => {
+            const c = getTagClass(t);
+            return '<span style="display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background: ' + c.background + '; color: ' + c.color + ';">' + t + '</span>';
+        }).join('');
+
+        const priceInfo = getPriceClass(f.price);
+
+        return '<div class="' + (isSelected ? 'card selected' : 'card') + '">' +
+            '<div class="card-header">' +
+            '<h3><a href="' + mapsUrl + '" target="_blank">' + f.name + '</a></h3>' +
+            '<input type="checkbox" class="want-to-go" data-name="' + f.name + '"' + (isSelected ? ' checked' : '') + ' onchange="handleCheckboxChange(\'' + f.name.replace(/'/g, "\\'") + '\', this.checked)">' +
+            '</div>' +
+            '<div class="tags">' + tagsHtml + '</div>' +
+            '<p class="features">' + f.features + '</p>' +
+            '<div class="details">' +
+            '<strong>價位：</strong><span style="display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 12px; background: ' + priceInfo.background + '; color: ' + priceInfo.color + ';">' + priceInfo.label + ' ' + f.price + '</span><br>' +
+            '<strong>時間：</strong>' + f.hours + '<br>' +
+            '<strong>地址：</strong>' + f.address +
+            '</div>' +
+            '</div>';
+    }).join('');
+}
+
+function renderTable(filtered) {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = filtered.map(f => {
+        const isSelected = selectedSet.has(f.name);
+        const mapsUrl = f.link || 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(f.name);
+        const typeArr = f.type || [];
+        const tagsHtml = typeArr.map(t => {
+            const c = getTagClass(t);
+            return '<span style="display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background: ' + c.background + '; color: ' + c.color + ';">' + t + '</span>';
+        }).join('');
+
+        const priceInfo = getPriceClass(f.price);
+
+        return '<tr>' +
+            '<td><input type="checkbox" class="want-to-go" data-name="' + f.name + '"' + (isSelected ? ' checked' : '') + ' onchange="handleCheckboxChange(\'' + f.name.replace(/'/g, "\\'") + '\', this.checked)"></td>' +
+            '<td><a href="' + mapsUrl + '" target="_blank">' + f.name + '</a></td>' +
+            '<td>' + tagsHtml + '</td>' +
+            '<td>' + f.features + '</td>' +
+            '<td><span style="display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background: ' + priceInfo.background + '; color: ' + priceInfo.color + ';">' + f.price + '</span></td>' +
+            '<td>' + f.hours + '</td>' +
+            '<td>' + f.address + '</td>' +
+            '<td><a href="' + mapsUrl + '" target="_blank" style="color: #4285f4; text-decoration: none;">📍</a></td>' +
+            '</tr>';
+    }).join('');
+}
+
+function filterFoods() {
+    const areaFilter = document.getElementById('areaFilter').value;
+    const priceLow = document.getElementById('priceLow').checked;
+    const selectedOnly = document.getElementById('selectedOnly').checked;
+    const searchText = document.getElementById('searchInput') ? document.getElementById('searchInput').value.toLowerCase().trim() : '';
+
+    const filtered = foods.filter(f => {
+        if (areaFilter !== 'all' && f.area !== areaFilter) return false;
+        if (selectedTags.size > 0 && ![...selectedTags].every(t => (f.type || []).includes(t))) return false;
+        if (priceLow && !f.price.includes("¥500") && !f.price.includes("¥600") && !f.price.includes("¥700") && !f.price.includes("¥800")) return false;
+        if (selectedOnly && !selectedSet.has(f.name)) return false;
+        if (searchText) {
+            const searchFields = [f.name || '', f.features || '', f.area || '', ...(f.type || [])].join(' ').toLowerCase();
+            if (!searchFields.includes(searchText)) return false;
+        }
+        return true;
+    });
+
+    renderCards(filtered);
+    renderTable(filtered);
+    document.getElementById('totalCount').textContent = filtered.length;
+}
+
+function updateStats() {
+    document.getElementById('selectedCount').textContent = selectedSet.size;
+}
+
+function updateTagOptions() {
+    const areaFilter = document.getElementById('areaFilter').value;
+    const allTags = [...new Set(foods.filter(f => areaFilter === 'all' || f.area === areaFilter).flatMap(f => f.type || []))];
+    const container = document.getElementById('tagFilterContainer');
+    container.innerHTML = allTags.map(t => {
+        const isSelected = selectedTags.has(t);
+        const c = getTagClass(t);
+        return '<label style="display: flex; align-items: center; gap: 3px; cursor: pointer; padding: 4px 8px; border-radius: 4px; background: ' + (isSelected ? c.background : '#f5f5f5') + '; color: ' + (isSelected ? c.color : '#616161') + '; font-size: 12px; font-weight: 500; user-select: none;">' +
+            '<input type="checkbox" style="display: none;" value="' + t + '"' + (isSelected ? ' checked' : '') + ' onchange="handleTagChange(this)">' +
+            t +
+            '</label>';
+    }).join('');
+}
+
+function handleTagChange(checkbox) {
+    if (checkbox.checked) {
+        selectedTags.add(checkbox.value);
+    } else {
+        selectedTags.delete(checkbox.value);
+    }
+    updateTagOptions();
+    filterFoods();
+}
+
+function getSelectedFoods() {
+    return Array.from(selectedSet);
+}
+
+function exportSelected() {
+    const selected = getSelectedFoods();
+    const resultBox = document.getElementById('resultBox');
+    const resultText = document.getElementById('resultText');
+    const selectedData = foods.filter(f => selected.includes(f.name));
+    resultText.textContent = JSON.stringify(selectedData, null, 2);
+    resultBox.classList.add('show');
+}
+
+function copySelected() {
+    const selected = getSelectedFoods();
+    const text = selected.join('\n');
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.btn-copy');
+        btn.textContent = '已複製!';
+        setTimeout(() => btn.textContent = '複製選擇', 2000);
+    });
+}
+
+document.getElementById('areaFilter').addEventListener('change', () => {
+    updateTagOptions();
+    filterFoods();
+});
+
+// Initialize
+updateTagOptions();
+filterFoods();
+</script>
+</body>
+</html>
