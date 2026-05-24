@@ -48,6 +48,12 @@
 - `attraction_selector_output/foods.html` - 美食選擇器（類似attractions.html的互動分頁）
 - `attraction_selector_output/candidates.html` - 候選清單（薈萃已選的景點和美食）
 
+### docs/selector/ -HTML選擇器（GitHub Pages顯示用）
+這些 HTML 檔案使用 Tailwind CSS CDN 引入樣式，無需 build step：
+- `docs/selector/attractions.html` - 景點選擇器（綠色主題）
+- `docs/selector/foods.html` - 美食選擇器（橙色主題）
+- `docs/selector/candidates.html` - 候選清單彙整
+
 **attractions.html 功能說明（請勿移除）**：
 - 資料來源：景點資料內嵌於 HTML 中的 JavaScript `attractions` 陣列
 - 篩選功能：城市（單選）、標籤（多選 AND 邏輯）、免費景點、已選景點、文字搜尋
@@ -56,6 +62,7 @@
 - 地圖連結：表格檢視有 Google Maps 📍 欄位
 - 選擇功能：可勾選景點加入已選清單，支援匯出 JSON / 複製名稱
 - localStorage：選擇會自動保存到 localStorage，跨分頁可見
+- UI樣式：Tailwind CSS CDN，響應式設計，漸層背景與毛玻璃效果
 - 重要：修改 HTML 時請勿移除這些功能的核心 JavaScript 邏輯
 
 **foods.html 功能說明（請勿移除）**：
@@ -66,6 +73,7 @@
 - 價位標籤：自動判斷平價/中價位/高價位
 - 地圖連結：表格檢視有 Google Maps 📍 欄位
 - localStorage：選擇會自動保存到 localStorage，跨分頁可見
+- UI樣式：Tailwind CSS CDN，響應式設計，暖色漸層背景
 - 重要：修改 HTML 時請勿移除這些功能的核心 JavaScript 邏輯
 
 **candidates.html 功能說明（請勿移除）**：
@@ -74,6 +82,7 @@
 - 篩選功能：按類別（全部/僅景點/僅美食）、按城市/地區
 - 移除功能：可單獨移除不需要的項目，或清除全部
 - 匯出功能：可匯出 JSON 格式的完整清單（含匯出時間）
+- UI樣式：Tailwind CSS CDN
 - 重要：修改 HTML 時請勿移除這些功能的核心 JavaScript 邏輯
 
 ### 資料目錄 data/
@@ -161,3 +170,21 @@ crawler.crawl_batch(['https://example.com/page1', 'https://example.com/page2'])
 - `attraction-selector/` - 景點篩選工具
 - `web-crawler/` - 網頁爬蟲工具
 - `fact-check/` - 資訊審核工具
+
+## HTML 選擇器開發原則
+
+### 技術棧
+- **Tailwind CSS CDN** - 透過 CDN 引入，無需 build step
+- **Vanilla JavaScript** - 不使用框架，保持輕量
+- **localStorage** - 用戶端資料持久化
+
+### 開發注意事項
+1. 保留所有核心 JavaScript 邏輯（篩選、localStorage、視圖切換）
+2. 可自由強化 CSS 樣式（使用 Tailwind 類別或自訂 CSS）
+3. 資料結構變更時需同步更新 HTML 中的 JS 陣列
+4. 所有 HTML 檔案須相容 GitHub Pages 靜態 hosting
+
+### 檔案位置
+- 景點選擇器：`docs/selector/attractions.html`
+- 美食選擇器：`docs/selector/foods.html`
+- 候選清單：`docs/selector/candidates.html`

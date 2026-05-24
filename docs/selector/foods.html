@@ -4,137 +4,92 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>大阪・京都美食選擇器</title>
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; padding: 20px; }
-h1 { text-align: center; color: #333; margin-bottom: 20px; }
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif; background: linear-gradient(135deg, #fff8f0 0%, #fef3e2 100%); min-height: 100vh; }
 
-.view-toggle { text-align: center; margin-bottom: 20px; }
-.view-toggle button { padding: 10px 20px; margin: 0 5px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer; font-size: 14px; }
-.view-toggle button.active { background: #FF9800; color: white; border-color: #FF9800; }
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: #d1c1b1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #b1a191; }
 
-.filters { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-.filter-group { display: flex; align-items: center; gap: 5px; }
-.filter-group label { font-weight: 500; font-size: 14px; }
-.filter-group select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
-.filter-group input[type="checkbox"] { width: 16px; height: 16px; }
+/* Card animations */
+.card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -8px rgba(0,0,0,0.15); }
+.card.selected { background: linear-gradient(135deg, #fff8f0 0%, #fff5eb 100%); }
 
-.stats { background: white; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; color: #666; }
+/* Tag pill style */
+.tag-pill { display: inline-block; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 500; transition: all 0.2s; }
+.tag-pill:hover { transform: scale(1.05); }
 
-/* Card View */
-.foods-grid { display: none; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px; }
-.foods-grid.show { display: grid; }
+/* View toggle button */
+.view-btn { padding: 10px 24px; border-radius: 9999px; font-weight: 500; transition: all 0.2s; }
+.view-btn.active { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4); }
+.view-btn:not(.active) { background: white; color: #6b7280; }
+.view-btn:not(.active):hover { background: #f9fafb; }
 
-.card { background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.2s; }
-.card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
-.card.selected { border: 2px solid #FF9800; background: #fff8f0; }
+/* Checkbox custom */
+.custom-checkbox { width: 20px; height: 20px; cursor: pointer; accent-color: #f97316; }
 
-.card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px; }
-.card h3 { font-size: 16px; color: #333; margin-right: 10px; }
-.card h3 a { color: inherit; text-decoration: none; }
-.card h3 a:hover { text-decoration: underline; }
+/* Filter section */
+.filter-section { backdrop-filter: blur(10px); background: rgba(255,255,255,0.9); }
 
-.card-header input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; flex-shrink: 0; }
+/* Responsive grid */
+@media (max-width: 640px) {
+  .foods-grid { grid-template-columns: 1fr !important; }
+}
 
-.tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
-.tag { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
-.tag.city-osaka { background: #fff3e0; color: #e65100; }
-.tag.city-kyoto { background: #e8f5e9; color: #2e7d32; }
-.tag.city-nara { background: #f3e5f5; color: #7b1fa2; }
-.tag.area-dotonbori { background: #ffcdd2; color: #c62828; }
-.tag.area-shinsaibashi { background: #f8bbd9; color: #880e4f; }
-.tag.area-kuromon { background: #e1bee7; color: #6a1b9a; }
-.tag.area-gion { background: #d7f9d0; color: #2e7d32; }
-.tag.area-arashiyama { background: #fff9c4; color: #f57f17; }
-.tag.type-ramen { background: #ffe0b2; color: #e65100; }
-.tag.type-seafood { background: #b3e5fc; color: #0277bd; }
-.tag.type-meat { background: #f3e5f5; color: #7b1fa2; }
-.tag.type-sweets { background: #f8bbd9; color: #880e4f; }
-.tag.type-local { background: #ffccbc; color: #bf360c; }
-.tag.price-low { background: #c8e6c9; color: #2e7d32; }
-.tag.price-med { background: #fff9c4; color: #f57f17; }
-.tag.price-high { background: #ffcdd2; color: #c62828; }
-
-.features { color: #666; font-size: 14px; margin-bottom: 10px; line-height: 1.4; }
-
-.details { font-size: 13px; color: #757575; line-height: 1.6; }
-.details strong { color: #555; }
-
-/* Table View */
-.foods-table { display: none; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-.foods-table.show { display: table; width: 100%; }
-
-.foods-table table { width: 100%; border-collapse: collapse; }
-
-.foods-table th, .foods-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
-
-.foods-table th { background: #f5f5f5; font-weight: 600; color: #333; }
-
-.foods-table tr:hover { background: #fff8f0; }
-
-.foods-table td input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
-
-.foods-table .tag { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; }
-
-/* Export Section */
-.export-section { background: white; padding: 20px; border-radius: 8px; margin-top: 20px; text-align: center; }
-.export-section button { padding: 12px 24px; font-size: 16px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
-.btn-export { background: #FF9800; color: white; }
-.btn-export:hover { background: #F57C00; }
-.btn-copy { background: #2196F3; color: white; }
-.btn-copy:hover { background: #1976D2; }
-
-.result-box { margin-top: 15px; padding: 15px; background: #f5f5f5; border-radius: 4px; text-align: left; max-height: 200px; overflow-y: auto; display: none; }
-.result-box.show { display: block; }
-.result-box pre { white-space: pre-wrap; font-size: 13px; }
-
-footer { text-align: center; margin-top: 30px; color: #999; font-size: 12px; }
-
-.back-link { text-align: center; margin-bottom: 15px; }
-.back-link a { color: #FF9800; text-decoration: none; font-size: 14px; }
-.back-link a:hover { text-decoration: underline; }
+/* View display control */
+.hidden { display: none !important; }
+.visible-grid { display: grid !important; }
+.visible-table { display: block !important; }
 </style>
 </head>
-<body>
-<div class="back-link"><a href="attractions.html">← 返回景點選擇器</a></div>
+<body class="p-4 md:p-8">
+<div class="max-w-7xl mx-auto">
+<div class="text-center mb-4"><a href="attractions.html" class="text-orange-500 hover:underline font-medium">← 返回景點選擇器</a></div>
 
-<h1>大阪・京都美食選擇器</h1>
+<h1 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-6">🍜 大阪・京都美食選擇器</h1>
 
-<div class="view-toggle">
-    <button id="cardViewBtn" class="active" onclick="showCardView()">卡片視圖</button>
-    <button id="tableViewBtn" onclick="showTableView()">表格視圖</button>
+<div class="view-toggle flex justify-center gap-3 mb-6">
+    <button id="cardViewBtn" class="view-btn active" onclick="showCardView()">卡片視圖</button>
+    <button id="tableViewBtn" class="view-btn" onclick="showTableView()">表格視圖</button>
 </div>
 
-<div class="filters">
-    <div class="filter-group">
-        <label>地區：</label>
-        <select id="areaFilter" onchange="updateTagOptions(); filterFoods()">
+<div class="filter-section rounded-2xl p-4 mb-6 shadow-sm border border-gray-100">
+    <div class="flex flex-wrap items-center gap-4">
+        <div class="filter-group flex items-center gap-2">
+            <label class="font-medium text-sm text-gray-700">地區：</label>
+            <select id="areaFilter" onchange="updateTagOptions(); filterFoods()" class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
             <option value="all">全部</option>
             <option value="大阪">大阪</option>
             <option value="京都">京都</option>
             <option value="奈良">奈良</option>
         </select>
-    </div>
-    <div class="filter-group">
-        <label>類別：</label>
-        <div id="tagFilterContainer" style="display: flex; flex-wrap: wrap; gap: 5px; max-width: 400px;"></div>
-    </div>
-    <div class="filter-group">
-        <label>🔍</label>
-        <input type="text" id="searchInput" placeholder="搜尋店家或料理..." oninput="filterFoods()" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; width: 200px;">
-    </div>
-    <div class="filter-group">
-        <input type="checkbox" id="priceLow" onchange="filterFoods()">
-        <label for="priceLow">平價</label>
-    </div>
-    <div class="filter-group">
-        <input type="checkbox" id="selectedOnly" onchange="filterFoods()">
-        <label for="selectedOnly">只顯示已選</label>
+        </div>
+        <div class="filter-group flex items-center gap-2">
+            <label class="font-medium text-sm text-gray-700">類別：</label>
+            <div id="tagFilterContainer" class="flex flex-wrap gap-2 max-w-xl"></div>
+        </div>
+        <div class="filter-group flex items-center gap-2">
+            <label class="text-lg">🔍</label>
+            <input type="text" id="searchInput" placeholder="搜尋店家或料理..." oninput="filterFoods()" class="px-3 py-2 border border-gray-200 rounded-lg text-sm w-48 focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <div class="filter-group flex items-center gap-2">
+            <input type="checkbox" id="priceLow" onchange="filterFoods()" class="custom-checkbox">
+            <label for="priceLow" class="text-sm text-gray-700">平價</label>
+        </div>
+        <div class="filter-group flex items-center gap-2">
+            <input type="checkbox" id="selectedOnly" onchange="filterFoods()" class="custom-checkbox">
+            <label for="selectedOnly" class="text-sm text-gray-700">只顯示已選</label>
+        </div>
     </div>
 </div>
 
-<div class="stats">
-    共 <span id="totalCount">0</span> 個美食，已選擇 <span id="selectedCount">0</span> 個
+<div class="stats bg-white/90 backdrop-blur rounded-xl px-4 py-3 mb-6 text-sm text-gray-600 shadow-sm border border-gray-100">
+    共 <span id="totalCount" class="font-bold text-gray-800">0</span> 個美食，已選擇 <span id="selectedCount" class="font-bold text-orange-600">0</span> 個
 </div>
 
 <!-- Card View -->
@@ -142,33 +97,36 @@ footer { text-align: center; margin-top: 30px; color: #999; font-size: 12px; }
 
 <!-- Table View -->
 <div class="foods-table" id="tableView">
-    <table>
+    <div class="overflow-x-auto">
+    <table class="w-full">
         <thead>
-            <tr>
-                <th style="width:40px"></th>
-                <th>店家名稱</th>
-                <th>類別</th>
-                <th>特色</th>
-                <th>價位</th>
-                <th>營業時間</th>
-                <th>地址</th>
-                <th style="width:50px">地圖</th>
+            <tr class="bg-gradient-to-r from-orange-50 to-amber-50">
+                <th class="w-12 p-3"></th>
+                <th class="p-3 text-left text-sm font-semibold text-gray-700">店家名稱</th>
+                <th class="p-3 text-left text-sm font-semibold text-gray-700">類別</th>
+                <th class="p-3 text-left text-sm font-semibold text-gray-700">特色</th>
+                <th class="p-3 text-left text-sm font-semibold text-gray-700">價位</th>
+                <th class="p-3 text-left text-sm font-semibold text-gray-700">營業時間</th>
+                <th class="p-3 text-left text-sm font-semibold text-gray-700">地址</th>
+                <th class="w-14 p-3 text-center text-sm font-semibold text-gray-700">地圖</th>
             </tr>
         </thead>
         <tbody id="tableBody"></tbody>
     </table>
+    </div>
 </div>
 
-<div class="export-section">
-    <button class="btn-export" onclick="exportSelected()">匯出已選</button>
-    <button class="btn-copy" onclick="copySelected()">複製選擇</button>
-    <div class="result-box" id="resultBox"><pre id="resultText"></pre></div>
+<div class="export-section mt-8 bg-white/90 backdrop-blur rounded-2xl p-6 shadow-lg border border-gray-100 text-center">
+    <button class="btn-export px-6 py-3 rounded-xl text-white font-medium mr-3 hover:shadow-lg transition-all" onclick="exportSelected()">📥 匯出已選</button>
+    <button class="btn-copy px-6 py-3 rounded-xl text-white font-medium hover:shadow-lg transition-all" onclick="copySelected()">📋 複製選擇</button>
+    <div class="result-box mt-4 p-4 bg-gray-50 rounded-xl text-left max-h-48 overflow-y-auto" id="resultBox"><pre id="resultText" class="text-sm text-gray-700 whitespace-pre-wrap"></pre></div>
 </div>
 
-<footer style="text-align: center; margin-top: 30px; color: #999; font-size: 12px;">
-    <a href="candidates.html" style="color: #4CAF50; text-decoration: none; margin-right: 15px;">📋 候選清單</a>
-    <a href="attractions.html" style="color: #4CAF50; text-decoration: none;">← 返回景點選擇器</a>
+<footer class="text-center mt-8 text-gray-400 text-sm">
+    <a href="candidates.html" class="text-green-600 hover:underline mr-4">📋 候選清單</a>
+    <a href="attractions.html" class="text-green-600 hover:underline">← 返回景點選擇器</a>
 </footer>
+</div>
 
 <script>
 const foods = [
@@ -289,42 +247,49 @@ function showCardView() {
     currentView = 'card';
     document.getElementById('cardViewBtn').classList.add('active');
     document.getElementById('tableViewBtn').classList.remove('active');
-    document.getElementById('foodsGrid').classList.add('show');
-    document.getElementById('tableView').classList.remove('show');
+    document.getElementById('foodsGrid').classList.remove('hidden');
+    document.getElementById('foodsGrid').classList.add('visible-grid');
+    document.getElementById('tableView').classList.add('hidden');
+    document.getElementById('tableView').classList.remove('visible-table');
 }
 
 function showTableView() {
     currentView = 'table';
     document.getElementById('tableViewBtn').classList.add('active');
     document.getElementById('cardViewBtn').classList.remove('active');
-    document.getElementById('foodsGrid').classList.remove('show');
-    document.getElementById('tableView').classList.add('show');
+    document.getElementById('foodsGrid').classList.add('hidden');
+    document.getElementById('foodsGrid').classList.remove('visible-grid');
+    document.getElementById('tableView').classList.remove('hidden');
+    document.getElementById('tableView').classList.add('visible-table');
 }
 
 function renderCards(filtered) {
     const grid = document.getElementById('foodsGrid');
+    grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6';
     grid.innerHTML = filtered.map(f => {
         const isSelected = selectedSet.has(f.name);
         const mapsUrl = f.link || 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(f.name);
         const typeArr = f.type || [];
         const tagsHtml = typeArr.map(t => {
             const c = getTagClass(t);
-            return '<span style="display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background: ' + c.background + '; color: ' + c.color + ';">' + t + '</span>';
+            return '<span class="tag-pill" style="background:' + c.background + '; color:' + c.color + ';">' + t + '</span>';
         }).join('');
 
         const priceInfo = getPriceClass(f.price);
 
-        return '<div class="' + (isSelected ? 'card selected' : 'card') + '">' +
-            '<div class="card-header">' +
-            '<h3><a href="' + mapsUrl + '" target="_blank">' + f.name + '</a></h3>' +
-            '<input type="checkbox" class="want-to-go" data-name="' + f.name + '"' + (isSelected ? ' checked' : '') + ' onchange="handleCheckboxChange(\'' + f.name.replace(/'/g, "\\'") + '\', this.checked)">' +
+        return '<div class="card bg-white rounded-2xl p-5 shadow-md' + (isSelected ? ' selected ring-2 ring-orange-500' : '') + '">' +
+            '<div class="card-header flex justify-between items-start mb-3">' +
+            '<h3 class="text-base font-semibold text-gray-800 mr-2"><a href="' + mapsUrl + '" target="_blank" class="hover:text-orange-600 transition-colors">' + f.name + '</a></h3>' +
+            '<input type="checkbox" class="want-to-go custom-checkbox flex-shrink-0" data-name="' + f.name + '"' + (isSelected ? ' checked' : '') + ' onchange="handleCheckboxChange(\'' + f.name.replace(/'/g, "\\'") + '\', this.checked)">' +
             '</div>' +
-            '<div class="tags">' + tagsHtml + '</div>' +
-            '<p class="features">' + f.features + '</p>' +
-            '<div class="details">' +
-            '<strong>價位：</strong><span style="display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 12px; background: ' + priceInfo.background + '; color: ' + priceInfo.color + ';">' + priceInfo.label + ' ' + f.price + '</span><br>' +
-            '<strong>時間：</strong>' + f.hours + '<br>' +
-            '<strong>地址：</strong>' + f.address +
+            '<div class="flex flex-wrap gap-2 mb-3">' + tagsHtml + '</div>' +
+            '<p class="text-sm text-gray-600 mb-3 leading-relaxed">' + f.features + '</p>' +
+            '<div class="flex flex-wrap gap-2 mb-3">' +
+            '<span class="tag-pill" style="background:' + priceInfo.background + '; color:' + priceInfo.color + ';">' + priceInfo.label + '</span>' +
+            '</div>' +
+            '<div class="text-xs text-gray-500 leading-relaxed space-y-1">' +
+            '<div><strong class="text-gray-600">營業：</strong>' + f.hours + '</div>' +
+            '<div><strong class="text-gray-600">地址：</strong>' + f.address + '</div>' +
             '</div>' +
             '</div>';
     }).join('');
@@ -338,20 +303,20 @@ function renderTable(filtered) {
         const typeArr = f.type || [];
         const tagsHtml = typeArr.map(t => {
             const c = getTagClass(t);
-            return '<span style="display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background: ' + c.background + '; color: ' + c.color + ';">' + t + '</span>';
+            return '<span class="tag-pill" style="background:' + c.background + '; color:' + c.color + ';">' + t + '</span>';
         }).join('');
 
         const priceInfo = getPriceClass(f.price);
 
-        return '<tr>' +
-            '<td><input type="checkbox" class="want-to-go" data-name="' + f.name + '"' + (isSelected ? ' checked' : '') + ' onchange="handleCheckboxChange(\'' + f.name.replace(/'/g, "\\'") + '\', this.checked)"></td>' +
-            '<td><a href="' + mapsUrl + '" target="_blank">' + f.name + '</a></td>' +
-            '<td>' + tagsHtml + '</td>' +
-            '<td>' + f.features + '</td>' +
-            '<td><span style="display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background: ' + priceInfo.background + '; color: ' + priceInfo.color + ';">' + f.price + '</span></td>' +
-            '<td>' + f.hours + '</td>' +
-            '<td>' + f.address + '</td>' +
-            '<td><a href="' + mapsUrl + '" target="_blank" style="color: #4285f4; text-decoration: none;">📍</a></td>' +
+        return '<tr class="hover:bg-orange-50 transition-colors' + (isSelected ? ' bg-orange-50' : '') + '">' +
+            '<td class="p-3"><input type="checkbox" class="want-to-go custom-checkbox" data-name="' + f.name + '"' + (isSelected ? ' checked' : '') + ' onchange="handleCheckboxChange(\'' + f.name.replace(/'/g, "\\'") + '\', this.checked)"></td>' +
+            '<td class="p-3"><a href="' + mapsUrl + '" target="_blank" class="text-orange-700 hover:underline font-medium">' + f.name + '</a></td>' +
+            '<td class="p-3"><div class="flex flex-wrap gap-1">' + tagsHtml + '</div></td>' +
+            '<td class="p-3 text-sm text-gray-600">' + f.features + '</td>' +
+            '<td class="p-3"><span class="tag-pill" style="background:' + priceInfo.background + '; color:' + priceInfo.color + ';">' + f.price + '</span></td>' +
+            '<td class="p-3 text-sm text-gray-600">' + f.hours + '</td>' +
+            '<td class="p-3 text-sm text-gray-600">' + f.address + '</td>' +
+            '<td class="p-3 text-center"><a href="' + mapsUrl + '" target="_blank" class="text-blue-500 hover:text-blue-700 text-lg">📍</a></td>' +
             '</tr>';
     }).join('');
 }
@@ -390,7 +355,7 @@ function updateTagOptions() {
     container.innerHTML = allTags.map(t => {
         const isSelected = selectedTags.has(t);
         const c = getTagClass(t);
-        return '<label style="display: flex; align-items: center; gap: 3px; cursor: pointer; padding: 4px 8px; border-radius: 4px; background: ' + (isSelected ? c.background : '#f5f5f5') + '; color: ' + (isSelected ? c.color : '#616161') + '; font-size: 12px; font-weight: 500; user-select: none;">' +
+        return '<label style="display: flex; align-items: center; gap: 3px; cursor: pointer; padding: 6px 12px; border-radius: 9999px; transition: all 0.2s; background: ' + (isSelected ? c.background : '#f3f4f6') + '; color: ' + (isSelected ? c.color : '#6b7280') + '; font-size: 13px; font-weight: 500; user-select: none;" class="hover:shadow-md">' +
             '<input type="checkbox" style="display: none;" value="' + t + '"' + (isSelected ? ' checked' : '') + ' onchange="handleTagChange(this)">' +
             t +
             '</label>';

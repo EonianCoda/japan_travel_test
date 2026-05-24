@@ -4,117 +4,83 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>候選清單 - 大阪・京都之旅</title>
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; padding: 20px; }
-h1 { text-align: center; color: #333; margin-bottom: 20px; }
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif; background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%); min-height: 100vh; }
 
-.nav-links { text-align: center; margin-bottom: 20px; }
-.nav-links a { color: #4CAF50; text-decoration: none; margin: 0 10px; font-size: 14px; }
-.nav-links a:hover { text-decoration: underline; }
-.nav-links span { color: #999; }
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
 
-.stats { background: white; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-.stats-info { font-size: 16px; color: #333; }
-.stats-info span { font-weight: bold; color: #4CAF50; }
-.stats-actions button { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; margin-right: 10px; }
-.btn-clear { background: #f44336; color: white; }
-.btn-clear:hover { background: #d32f2f; }
-.btn-export { background: #4CAF50; color: white; }
-.btn-export:hover { background: #45a049; }
+/* Tag pill style */
+.tag-pill { display: inline-block; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 500; transition: all 0.2s; }
+.tag-pill:hover { transform: scale(1.05); }
 
-.filter-bar { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-.filter-group { display: flex; align-items: center; gap: 5px; }
-.filter-group label { font-weight: 500; font-size: 14px; }
-.filter-group select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
-
-.items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 15px; }
-.item-card { background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: relative; }
-.item-card.attraction { border-left: 4px solid #4CAF50; }
-.item-card.food { border-left: 4px solid #FF9800; }
+/* Card animations */
+.item-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.item-card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px -4px rgba(0,0,0,0.1); }
 .item-card.removing { opacity: 0.5; }
 
-.item-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px; }
-.item-header h3 { font-size: 16px; color: #333; margin: 0; }
-.item-header h3 a { color: inherit; text-decoration: none; }
-.item-header h3 a:hover { text-decoration: underline; }
-.item-type { font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 500; }
-.item-type.attraction { background: #e8f5e9; color: #2e7d32; }
-.item-type.food { background: #fff3e0; color: #e65100; }
-
-.item-remove { background: none; border: none; color: #999; cursor: pointer; font-size: 18px; padding: 2px 6px; }
-.item-remove:hover { color: #f44336; }
-
-.item-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
-.tag { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
-
-.item-details { font-size: 13px; color: #666; line-height: 1.6; }
-.item-details strong { color: #555; }
-
-.item-price { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background: #c8e6c9; color: #2e7d32; margin-top: 5px; }
-.item-price.high { background: #ffcdd2; color: #c62828; }
-.item-price.med { background: #fff9c4; color: #f57f17; }
-
-.empty-state { text-align: center; padding: 60px 20px; background: white; border-radius: 8px; }
-.empty-state h2 { color: #999; margin-bottom: 15px; }
-.empty-state p { color: #bbb; margin-bottom: 20px; }
-.empty-state a { color: #4CAF50; text-decoration: none; }
-.empty-state a:hover { text-decoration: underline; }
-
-.result-box { margin-top: 20px; padding: 15px; background: white; border-radius: 8px; display: none; }
-.result-box.show { display: block; }
-.result-box pre { white-space: pre-wrap; font-size: 13px; max-height: 400px; overflow-y: auto; }
-
-footer { text-align: center; margin-top: 30px; color: #999; font-size: 12px; }
+/* Responsive grid */
+@media (max-width: 640px) {
+  .items-grid { grid-template-columns: 1fr !important; }
+}
 </style>
 </head>
-<body>
-<h1>候選清單</h1>
+<body class="p-4 md:p-8">
+<div class="max-w-6xl mx-auto">
+<h1 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-4">📋 候選清單</h1>
 
-<div class="nav-links">
-    <a href="attractions.html">← 景點選擇器</a>
-    <span>|</span>
-    <a href="foods.html">美食選擇器 →</a>
+<div class="text-center mb-6">
+    <a href="attractions.html" class="text-green-600 hover:underline font-medium">← 景點選擇器</a>
+    <span class="text-gray-400 mx-2">|</span>
+    <a href="foods.html" class="text-orange-500 hover:underline font-medium">美食選擇器 →</a>
 </div>
 
-<div class="stats">
-    <div class="stats-info">
-        已選擇 <span id="totalCount">0</span> 個項目（<span id="attractionCount">0</span> 個景點、<span id="foodCount">0</span> 個美食）
+<div class="bg-white/90 backdrop-blur rounded-2xl p-4 mb-6 shadow-lg border border-gray-100 flex flex-wrap justify-between items-center gap-4">
+    <div class="text-gray-700">
+        已選擇 <span id="totalCount" class="font-bold text-green-600">0</span> 個項目（<span id="attractionCount" class="font-bold">0</span> 個景點、<span id="foodCount" class="font-bold text-orange-500">0</span> 個美食）
     </div>
-    <div class="stats-actions">
-        <button class="btn-clear" onclick="clearAll()">清除全部</button>
-        <button class="btn-export" onclick="exportSelected()">匯出 JSON</button>
+    <div class="flex gap-3">
+        <button class="btn-clear px-5 py-2 rounded-xl text-white font-medium bg-red-500 hover:bg-red-600 transition-all" onclick="clearAll()">清除全部</button>
+        <button class="btn-export px-5 py-2 rounded-xl text-white font-medium bg-green-500 hover:bg-green-600 transition-all" onclick="exportSelected()">📥 匯出 JSON</button>
     </div>
 </div>
 
-<div class="filter-bar">
-    <div class="filter-group">
-        <label>類別：</label>
-        <select id="typeFilter" onchange="renderItems()">
+<div class="bg-white/90 backdrop-blur rounded-2xl p-4 mb-6 shadow-lg border border-gray-100">
+    <div class="flex flex-wrap items-center gap-4">
+        <div class="filter-group flex items-center gap-2">
+            <label class="font-medium text-sm text-gray-700">類別：</label>
+            <select id="typeFilter" onchange="renderItems()" class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
             <option value="all">全部</option>
             <option value="attraction">僅景點</option>
             <option value="food">僅美食</option>
         </select>
-    </div>
-    <div class="filter-group">
-        <label>城市/地區：</label>
-        <select id="areaFilter" onchange="renderItems()">
+        </div>
+        <div class="filter-group flex items-center gap-2">
+            <label class="font-medium text-sm text-gray-700">城市/地區：</label>
+            <select id="areaFilter" onchange="renderItems()" class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
             <option value="all">全部</option>
             <option value="京都">京都</option>
             <option value="大阪">大阪</option>
             <option value="奈良">奈良</option>
             <option value="關西延伸">關西延伸</option>
         </select>
+        </div>
     </div>
 </div>
 
-<div id="itemsContainer" class="items-grid"></div>
+<div id="itemsContainer" class="items-grid grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"></div>
 
-<div class="result-box" id="resultBox">
-    <pre id="resultText"></pre>
+<div class="result-box bg-white/90 backdrop-blur rounded-2xl p-4 shadow-lg border border-gray-100" id="resultBox">
+    <pre id="resultText" class="text-sm text-gray-700 whitespace-pre-wrap max-h-96 overflow-y-auto"></pre>
 </div>
 
-<footer>用 Claude Code 整理 | 2026年5月</footer>
+<footer class="text-center mt-8 text-gray-400 text-sm">用 Claude Code 整理 | 2026年5月</footer>
+</div>
 
 <script>
 // 從 localStorage 讀取選擇
@@ -202,37 +168,37 @@ function renderItems() {
     }
 
     container.innerHTML = items.map(item => {
-        const tagsHtml = item.tags.map(t => `<span class="tag" style="background: ${getTagColor(t)}; color: ${getTagTextColor(t)};">${t}</span>`).join('');
+        const tagsHtml = item.tags.map(t => `<span class="tag-pill" style="background: ${getTagColor(t)}; color: ${getTagTextColor(t)};">${t}</span>`).join('');
         const priceClass = getPriceClass(item.price);
         const mapsUrl = item.link || 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(item.name + ' ' + (item.city || ''));
 
         let details = '';
         if (item.type === 'attraction') {
             details = `
-                ${item.duration ? '<strong>停留：</strong>' + item.duration + '<br>' : ''}
-                ${item.hours ? '<strong>時間：</strong>' + item.hours + '<br>' : ''}
-                ${item.transport ? '<strong>交通：</strong>' + item.transport : ''}
+                ${item.duration ? '<div class="mt-2"><strong class="text-gray-600">停留：</strong>' + item.duration + '</div>' : ''}
+                ${item.hours ? '<div><strong class="text-gray-600">時間：</strong>' + item.hours + '</div>' : ''}
+                ${item.transport ? '<div><strong class="text-gray-600">交通：</strong>' + item.transport + '</div>' : ''}
             `;
         } else {
             details = `
-                ${item.hours ? '<strong>時間：</strong>' + item.hours + '<br>' : ''}
-                ${item.address ? '<strong>地址：</strong>' + item.address : ''}
+                ${item.hours ? '<div class="mt-2"><strong class="text-gray-600">時間：</strong>' + item.hours + '</div>' : ''}
+                ${item.address ? '<div><strong class="text-gray-600">地址：</strong>' + item.address + '</div>' : ''}
             `;
         }
 
         return `
-            <div class="item-card ${item.type}" data-id="${item.id}" data-type="${item.type}">
-                <div class="item-header">
-                    <h3><a href="${mapsUrl}" target="_blank">${item.name}</a></h3>
-                    <span class="item-type ${item.type}">${item.type === 'attraction' ? '景點' : '美食'}</span>
+            <div class="item-card bg-white rounded-2xl p-5 shadow-md relative ${item.type === 'attraction' ? 'border-l-4 border-green-500' : 'border-l-4 border-orange-500'}" data-id="${item.id}" data-type="${item.type}">
+                <div class="flex justify-between items-start mb-3">
+                    <h3 class="text-base font-semibold text-gray-800"><a href="${mapsUrl}" target="_blank" class="hover:underline">${item.name}</a></h3>
+                    <span class="tag-pill text-xs ${item.type === 'attraction' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">${item.type === 'attraction' ? '景點' : '美食'}</span>
                 </div>
-                <div class="item-tags">${tagsHtml}</div>
-                <div class="item-details">
+                <div class="flex flex-wrap gap-2 mb-3">${tagsHtml}</div>
+                <div class="text-sm text-gray-600 leading-relaxed">
                     ${item.features || ''}
                     ${details}
-                    ${item.price ? '<div class="item-price ' + priceClass + '">' + item.price + '</div>' : ''}
+                    ${item.price ? '<div class="mt-2"><span class="tag-pill text-xs" style="background:' + priceClass.background + '; color:' + priceClass.color + ';">' + item.price + '</span></div>' : ''}
                 </div>
-                <button class="item-remove" onclick="removeItem('${item.type}', '${item.id.replace(/'/g, "\\'")}')" title="移除">✕</button>
+                <button class="item-remove absolute top-3 right-3 bg-none border-none text-gray-400 cursor-pointer text-xl hover:text-red-500 transition-colors" onclick="removeItem('${item.type}', '${item.id.replace(/'/g, "\\'")}')" title="移除">✕</button>
             </div>
         `;
     }).join('');
