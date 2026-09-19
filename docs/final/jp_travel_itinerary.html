@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日本關西 8 日之旅｜ Osaka · Kyoto · Nara · Kobe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:wght@600;700&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAFAF7;
+      --bg-card: #FFFFFF;
+      --bg-accent: #F5F0E8;
+      --ink: #1A1A1A;
+      --ink-muted: #6B6B6B;
+      --ink-subtle: #9A9A9A;
+      --red: #C41E3A;
+      --red-light: #E8D4D4;
+      --gold: #B8860B;
+      --gold-light: #F5ECD7;
+      --green: #2D5A27;
+      --border: #E5E5E0;
+      --shadow: rgba(0,0,0,0.06);
+      --shadow-md: rgba(0,0,0,0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Header ─── */
+    .hero {
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      right: -80px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, var(--red-light) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      left: -60px;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, var(--gold-light) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      background: var(--red);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border-radius: 100px;
+      margin-bottom: 32px;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      color: var(--ink);
+    }
+
+    .hero-title span {
+      display: block;
+      color: var(--red);
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: var(--ink-muted);
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      margin-bottom: 48px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      justify-content: center;
+    }
+
+    .hero-meta-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .hero-meta-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--ink-subtle);
+      font-weight: 500;
+    }
+
+    .hero-meta-value {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink-subtle);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    .scroll-hint svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ─── Day Nav ─── */
+    .day-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(250, 250, 247, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .day-nav::-webkit-scrollbar { display: none; }
+
+    .day-nav-inner {
+      display: flex;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .day-tab {
+      flex: 1;
+      min-width: 120px;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .day-tab:hover {
+      background: var(--bg-accent);
+    }
+
+    .day-tab.active {
+      border-bottom-color: var(--red);
+    }
+
+    .day-tab-num {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-subtle);
+      font-weight: 500;
+    }
+
+    .day-tab-title {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .day-tab-date {
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+    }
+
+    /* ─── Main Content ─── */
+    .main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 64px 24px 120px;
+    }
+
+    /* ─── Day Section ─── */
+    .day-section {
+      margin-bottom: 80px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .day-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .day-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .day-number {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 64px;
+    }
+
+    .day-num-big {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--red);
+    }
+
+    .day-num-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--ink-subtle);
+      margin-top: 4px;
+    }
+
+    .day-info {
+      flex: 1;
+    }
+
+    .day-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--ink);
+    }
+
+    .day-subtitle {
+      font-size: 0.9rem;
+      color: var(--ink-muted);
+      font-weight: 300;
+    }
+
+    /* ─── Timeline Items ─── */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 20px;
+      padding: 16px 20px;
+      background: var(--bg-card);
+      border-radius: 12px;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .timeline-item:hover {
+      transform: translateX(4px);
+      box-shadow: 0 4px 20px var(--shadow);
+    }
+
+    .timeline-item.highlight {
+      background: linear-gradient(135deg, var(--bg-card) 0%, #FFF9F0 100%);
+      border: 1px solid var(--gold-light);
+    }
+
+    .timeline-item.highlight::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--gold);
+      border-radius: 3px 0 0 3px;
+    }
+
+    .timeline-time {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--ink-subtle);
+      padding-top: 2px;
+    }
+
+    .timeline-content {
+      display: flex;
+      gap: 14px;
+    }
+
+    .timeline-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .timeline-icon.transport { background: #E8F4E8; }
+    .timeline-icon.attraction { background: var(--red-light); }
+    .timeline-icon.food { background: #FFF3E0; }
+    .timeline-icon.rest { background: #E3F2FD; }
+    .timeline-icon.activity { background: #F3E5F5; }
+    .timeline-icon.fixed { background: var(--gold-light); }
+
+    .timeline-details {
+      flex: 1;
+    }
+
+    .timeline-type {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-subtle);
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .timeline-title {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .timeline-note {
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+      line-height: 1.5;
+    }
+
+    .timeline-note strong {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    /* ─── Footer ─── */
+    .footer {
+      text-align: center;
+      padding: 48px 24px;
+      border-top: 1px solid var(--border);
+      background: var(--bg-card);
+    }
+
+    .footer p {
+      font-size: 0.85rem;
+      color: var(--ink-subtle);
+    }
+
+    .footer-flag {
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+    }
+
+    /* ─── Back to top ─── */
+    .back-to-top {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      width: 48px;
+      height: 48px;
+      background: var(--ink);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px var(--shadow-md);
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .back-to-top:hover {
+      background: var(--red);
+      transform: translateY(-2px);
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 640px) {
+      .hero { min-height: 60vh; padding: 60px 20px 48px; }
+      .hero-title { font-size: 2.4rem; }
+      .hero-meta { gap: 20px; }
+
+      .day-nav-inner { padding: 0 12px; }
+      .day-tab { min-width: 90px; padding: 12px 8px; }
+      .day-tab-title { font-size: 0.75rem; }
+
+      .main { padding: 48px 16px 100px; }
+
+      .day-header { flex-direction: column; gap: 16px; }
+      .day-number { flex-direction: row; align-items: baseline; gap: 8px; }
+      .day-num-big { font-size: 2.5rem; }
+
+      .timeline-item { grid-template-columns: 1fr; gap: 8px; }
+      .timeline-time { font-size: 0.75rem; }
+
+      .back-to-top { bottom: 20px; right: 20px; width: 44px; height: 44px; }
+    }
+
+    /* ─── Print ─── */
+    @media print {
+      .day-nav, .back-to-top, .scroll-hint { display: none; }
+      .hero { min-height: auto; padding: 40px 24px; }
+      .day-section { opacity: 1; transform: none; page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+      2025 秋
+    </div>
+    <h1 class="hero-title">
+      日本關西<span>深度之旅</span>
+    </h1>
+    <p class="hero-subtitle"> Osaka · Kyoto · Nara · Kobe · Himeji</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">出發</span>
+        <span class="hero-meta-value">9/26（六）</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">返回</span>
+        <span class="hero-meta-value">10/3（六）</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">天數</span>
+        <span class="hero-meta-value">8 天 7 夜</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">人數</span>
+        <span class="hero-meta-value">2 人</span>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <span>SCROLL</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+    </div>
+  </header>
+
+  <!-- Day Navigation -->
+  <nav class="day-nav">
+    <div class="day-nav-inner">
+      <a href="#day1" class="day-tab active" data-day="1">
+        <span class="day-tab-num">Day 1</span>
+        <span class="day-tab-title">抵達大阪</span>
+        <span class="day-tab-date">9/26</span>
+      </a>
+      <a href="#day2" class="day-tab" data-day="2">
+        <span class="day-tab-num">Day 2</span>
+        <span class="day-tab-title">大阪經典</span>
+        <span class="day-tab-date">9/27</span>
+      </a>
+      <a href="#day3" class="day-tab" data-day="3">
+        <span class="day-tab-num">Day 3</span>
+        <span class="day-tab-title">姬路・神戶</span>
+        <span class="day-tab-date">9/28</span>
+      </a>
+      <a href="#day4" class="day-tab" data-day="4">
+        <span class="day-tab-num">Day 4</span>
+        <span class="day-tab-title">奈良・移動</span>
+        <span class="day-tab-date">9/29</span>
+      </a>
+      <a href="#day5" class="day-tab" data-day="5">
+        <span class="day-tab-num">Day 5</span>
+        <span class="day-tab-title">稻荷・宇治</span>
+        <span class="day-tab-date">9/30</span>
+      </a>
+      <a href="#day6" class="day-tab" data-day="6">
+        <span class="day-tab-num">Day 6</span>
+        <span class="day-tab-title">金閣・嵐山</span>
+        <span class="day-tab-date">10/1</span>
+      </a>
+      <a href="#day7" class="day-tab" data-day="7">
+        <span class="day-tab-num">Day 7</span>
+        <span class="day-tab-title">清水・採購</span>
+        <span class="day-tab-date">10/2</span>
+      </a>
+      <a href="#day8" class="day-tab" data-day="8">
+        <span class="day-tab-num">Day 8</span>
+        <span class="day-tab-title">滿載而歸</span>
+        <span class="day-tab-date">10/3</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- Day 1 -->
+    <section class="day-section" id="day1">
+      <div class="day-header">
+        <div class="day-number">
+          <span class="day-num-big">01</span>
+          <span class="day-num-label">DAY ONE</span>
+        </div>
+        <div class="day-info">
+          <h2 class="day-title">抵達大阪，輕鬆安頓</h2>
+          <p class="day-subtitle">9月26日（六）｜關西國際機場 → 一難波南2號店</p>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="timeline-time">15:15 - 19:00</span>
+          <div class="timeline-content">
+            <div class="timeline-icon transport">✈️</div>
+            <div class="timeline-details">
+              <div class="timeline-type">航班</div>
+              <div class="timeline-title">TPE 桃園機場 → KIX 關西國際機場</div>
+              <div class="timeline-note">中華航空 CI1562</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">19:00 - 20:15</span>
+          <div class="timeline-content">
+            <div class="timeline-icon activity">🛂</div>
+            <div class="timeline-details">
+              <div class="timeline-type">過關</div>
+              <div class="timeline-title">入境通關、領取行李</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">20:15 - 21:05</span>
+          <div class="timeline-content">
+            <div class="timeline-icon transport">🚆</div>
+            <div class="timeline-details">
+              <div class="timeline-type">交通</div>
+              <div class="timeline-title">南海電鐵 直達新今宮站 / 難波站</div>
+              <div class="timeline-note">機場急行或 Rapi:t 特急，車程約 40-45 分鐘</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">21:15 - 22:00</span>
+          <div class="timeline-content">
+            <div class="timeline-icon rest">🛏️</div>
+            <div class="timeline-details">
+              <div class="timeline-type">入宿</div>
+              <div class="timeline-title">一難波南2號店</div>
+              <div class="timeline-note">Apartment Hotel 11 Namba Minami 2｜步行約 5-8 分鐘</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">22:00 以後</span>
+          <div class="timeline-content">
+            <div class="timeline-icon food">🍜</div>
+            <div class="timeline-details">
+              <div class="timeline-type">晚餐</div>
+              <div class="timeline-title">宵夜時光</div>
+              <div class="timeline-note">附近超商或松屋簡單用餐，為隔天養足精神</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Day 2 -->
+    <section class="day-section" id="day2">
+      <div class="day-header">
+        <div class="day-number">
+          <span class="day-num-big">02</span>
+          <span class="day-num-label">DAY TWO</span>
+        </div>
+        <div class="day-info">
+          <h2 class="day-title">大阪經典巡禮與商圈採購</h2>
+          <p class="day-subtitle">9月27日（日）｜木津市場 → 大阪城 → 黑門市場 → 心齋橋 → 寶可夢中心 → 溫泉</p>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="timeline-time">09:00 - 10:30</span>
+          <div class="timeline-content">
+            <div class="timeline-icon food">🍣</div>
+            <div class="timeline-details">
+              <div class="timeline-type">早餐</div>
+              <div class="timeline-title">木津市場</div>
+              <div class="timeline-note">步行約 5 分鐘｜體驗熱鬧早市，品嚐新鮮海產與生魚片丼飯</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">10:30 - 13:00</span>
+          <div class="timeline-content">
+            <div class="timeline-icon attraction">🏯</div>
+            <div class="timeline-details">
+              <div class="timeline-type">景點</div>
+              <div class="timeline-title">大阪城</div>
+              <div class="timeline-note">地鐵至谷町四丁目站，步行約 10-15 分鐘｜欣賞天守閣與護城河</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">13:20 - 14:30</span>
+          <div class="timeline-content">
+            <div class="timeline-icon food">🍢</div>
+            <div class="timeline-details">
+              <div class="timeline-type">午餐</div>
+              <div class="timeline-title">黑門市場</div>
+              <div class="timeline-note">大阪的廚房｜邊走邊吃、和牛烤肉串</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">14:30 - 16:30</span>
+          <div class="timeline-content">
+            <div class="timeline-icon attraction">🎮</div>
+            <div class="timeline-details">
+              <div class="timeline-type">景點</div>
+              <div class="timeline-title">日本橋電器街 ＆ 心齋橋筋商店街</div>
+              <div class="timeline-note">電器街步行約 5-10 分鐘，逛街後步行約 15 分鐘至心齋橋｜採購服飾、藥妝</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">16:45 - 18:30</span>
+          <div class="timeline-content">
+            <div class="timeline-icon attraction">⚡</div>
+            <div class="timeline-details">
+              <div class="timeline-type">景點</div>
+              <div class="timeline-title">寶可夢中心 Pokémon Center Osaka</div>
+              <div class="timeline-note">大丸百貨梅田店 13 樓</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">18:45 - 20:30</span>
+          <div class="timeline-content">
+            <div class="timeline-icon food">🍺</div>
+            <div class="timeline-details">
+              <div class="timeline-type">晚餐</div>
+              <div class="timeline-title">天神橋筋商店街</div>
+              <div class="timeline-note">日本最長的商店街｜找間順眼的日式定食</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">20:30 - 22:00</span>
+          <div class="timeline-content">
+            <div class="timeline-icon rest">♨️</div>
+            <div class="timeline-details">
+              <div class="timeline-type">放鬆</div>
+              <div class="timeline-title">浪速之湯天然溫泉</div>
+              <div class="timeline-note">天神橋筋六丁目站步行約 8 分鐘｜泡湯後返回飯店</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Day 3 -->
+    <section class="day-section" id="day3">
+      <div class="day-header">
+        <div class="day-number">
+          <span class="day-num-big">03</span>
+          <span class="day-num-label">DAY THREE</span>
+        </div>
+        <div class="day-info">
+          <h2 class="day-title">國寶名城與神戶牛饗宴</h2>
+          <p class="day-subtitle">9月28日（一）｜姬路城 → 神戶市區</p>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="timeline-time">09:00 - 10:35</span>
+          <div class="timeline-content">
+            <div class="timeline-icon transport">🚆</div>
+            <div class="timeline-details">
+              <div class="timeline-type">交通</div>
+              <div class="timeline-title">JR 新快速（往姬路方向）</div>
+              <div class="timeline-note">大阪站出發，車程約 65 分鐘，無需轉車</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">10:50 - 12:50</span>
+          <div class="timeline-content">
+            <div class="timeline-icon attraction">🏯</div>
+            <div class="timeline-details">
+              <div class="timeline-type">景點</div>
+              <div class="timeline-title">姬路城</div>
+              <div class="timeline-note">日本保存最完整的國寶白鷺城｜步行約 15-20 分鐘</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item highlight">
+          <span class="timeline-time">14:00 - 16:00</span>
+          <div class="timeline-content">
+            <div class="timeline-icon fixed">🥩</div>
+            <div class="timeline-details">
+              <div class="timeline-type">固定行程</div>
+              <div class="timeline-title">Mouriya 三宮店 — 神戶牛鐵板燒</div>
+              <div class="timeline-note">頂級神戶牛體驗｜<strong>務必提前預約</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">16:00 - 18:30</span>
+          <div class="timeline-content">
+            <div class="timeline-icon attraction">🛳️</div>
+            <div class="timeline-details">
+              <div class="timeline-type">景點</div>
+              <div class="timeline-title">神戶市區散策</div>
+              <div class="timeline-note">北野異人館街感受歐風情調，或往南至美利堅公園看神戶港</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">18:30 - 19:30</span>
+          <div class="timeline-content">
+            <div class="timeline-icon transport">🚆</div>
+            <div class="timeline-details">
+              <div class="timeline-type">交通</div>
+              <div class="timeline-title">JR 快速列車 返回大阪難波</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Day 4 -->
+    <section class="day-section" id="day4">
+      <div class="day-header">
+        <div class="day-number">
+          <span class="day-num-big">04</span>
+          <span class="day-num-label">DAY FOUR</span>
+        </div>
+        <div class="day-info">
+          <h2 class="day-title">古都奈良與藝術之夜</h2>
+          <p class="day-subtitle">9月29日（二）｜奈良公園 → 移動至京都 → teamLab</p>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="timeline-time">09:00 - 10:20</span>
+          <div class="timeline-content">
+            <div class="timeline-icon transport">🚆</div>
+            <div class="timeline-details">
+              <div class="timeline-type">交通</div>
+              <div class="timeline-title">近鐵奈良線 直達近鐵奈良站</div>
+              <div class="timeline-note">近鐵難波站出發，快速急行，車程約 40 分鐘</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">10:20 - 13:00</span>
+          <div class="timeline-content">
+            <div class="timeline-icon attraction">🦌</div>
+            <div class="timeline-details">
+              <div class="timeline-type">景點</div>
+              <div class="timeline-title">奈良公園 ＆ 東大寺 ＆ 春日大社</div>
+              <div class="timeline-note">綠地漫步看鹿、參觀世界最大木造建築、森林包圍的神社</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">13:00 - 14:15</span>
+          <div class="timeline-content">
+            <div class="timeline-icon food">🍱</div>
+            <div class="timeline-details">
+              <div class="timeline-type">午餐</div>
+              <div class="timeline-title">春日大社表參道 / 近鐵奈良站周邊</div>
+              <div class="timeline-note">推薦中谷堂現搗麻糬</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">14:15 - 15:10</span>
+          <div class="timeline-content">
+            <div class="timeline-icon transport">🚄</div>
+            <div class="timeline-details">
+              <div class="timeline-type">交通</div>
+              <div class="timeline-title">近鐵奈良站 → 京都車站</div>
+              <div class="timeline-note">近鐵特急（需劃位），車程約 35 分鐘</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">15:10 - 16:00</span>
+          <div class="timeline-content">
+            <div class="timeline-icon rest">🛏️</div>
+            <div class="timeline-details">
+              <div class="timeline-type">入宿</div>
+              <div class="timeline-title">京都蘭多爾公寓套房飯店</div>
+              <div class="timeline-note">京都車站八条口步行約 10 分鐘</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item highlight">
+          <span class="timeline-time">18:00 - 19:30</span>
+          <div class="timeline-content">
+            <div class="timeline-icon fixed">🔮</div>
+            <div class="timeline-details">
+              <div class="timeline-type">固定行程</div>
+              <div class="timeline-title">teamLab Biovortex Kyoto</div>
+              <div class="timeline-note">18:00-18:30 時段進場｜步行從飯店出發</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Day 5 -->
+    <section class="day-section" id="day5">
+      <div class="day-header">
+        <div class="day-number">
+          <span class="day-num-big">05</span>
+          <span class="day-num-label">DAY FIVE</span>
+        </div>
+        <div class="day-info">
+          <h2 class="day-title">千本鳥居與宇治任天堂朝聖</h2>
+          <p class="day-subtitle">9月30日（三）｜伏見稻荷大社 → 宇治 → 任天堂博物館</p>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="timeline-time">09:00 - 11:15</span>
+          <div class="timeline-content">
+            <div class="timeline-icon attraction">⛩️</div>
+            <div class="timeline-details">
+              <div class="timeline-type">景點</div>
+              <div class="timeline-title">伏見稻荷大社</div>
+              <div class="timeline-note">JR 稻荷站出站即達｜建議順著千本鳥居往山上走一段避開人潮</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">11:40 - 14:30</span>
+          <div class="timeline-content">
+            <div class="timeline-icon attraction">🍵</div>
+            <div class="timeline-details">
+              <div class="timeline-type">景點與午餐</div>
+              <div class="timeline-title">宇治散步（平等院）</div>
+              <div class="timeline-note">JR 奈良線至宇治站，車程約 25 分鐘｜午餐推薦抹茶蕎麥麵</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item highlight">
+          <span class="timeline-time">15:30 - 18:00</span>
+          <div class="timeline-content">
+            <div class="timeline-icon fixed">🍄</div>
+            <div class="timeline-details">
+              <div class="timeline-type">固定行程</div>
+              <div class="timeline-title">任天堂博物館 Nintendo Museum</div>
+              <div class="timeline-note">JR 小倉站步行約 8 分鐘｜15:30-16:00 時段進場｜<strong>務必提前預約</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">18:00 - 20:30</span>
+          <div class="timeline-content">
+            <div class="timeline-icon food">🍲</div>
+            <div class="timeline-details">
+              <div class="timeline-type">晚餐</div>
+              <div class="timeline-title">京都車站周邊</div>
+              <div class="timeline-note">站內拉麵小路或地下街</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Day 6 -->
+    <section class="day-section" id="day6">
+      <div class="day-header">
+        <div class="day-number">
+          <span class="day-num-big">06</span>
+          <span class="day-num-label">DAY SIX</span>
+        </div>
+        <div class="day-info">
+          <h2 class="day-title">瑞饋祭、嵐山風華與絕品漢堡排</h2>
+          <p class="day-subtitle">10月1日（四）｜金閣寺 → 北野天滿宮 → 嵐山 → 鴨川</p>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="timeline-time">09:00 - 10:40</span>
+          <div class="timeline-content">
+            <div class="timeline-icon attraction">✨</div>
+            <div class="timeline-details">
+              <div class="timeline-type">景點</div>
+              <div class="timeline-title">金閣寺（鹿苑寺）</div>
+              <div class="timeline-note">京都車站搭 205 號公車至「金閣寺道」，車程約 40 分鐘</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item highlight">
+          <span class="timeline-time">11:00 - 13:00</span>
+          <div class="timeline-content">
+            <div class="timeline-icon fixed">🏮</div>
+            <div class="timeline-details">
+              <div class="timeline-type">固定行程</div>
+              <div class="timeline-title">北野天滿宮 — 瑞饋祭・神幸祭</div>
+              <div class="timeline-note">公車至「北野天滿宮前」｜觀賞特色祭典，中午前可在攤販區購買小吃</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">13:20 - 17:00</span>
+          <div class="timeline-content">
+            <div class="timeline-icon attraction">🎋</div>
+            <div class="timeline-details">
+              <div class="timeline-type">景點</div>
+              <div class="timeline-title">嵐山（渡月橋）</div>
+              <div class="timeline-note">嵐電北野白梅町站直達嵐山站，車程約 20 分鐘｜竹林之道、天龍寺、渡月橋</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item highlight">
+          <span class="timeline-time">18:30 - 20:00</span>
+          <div class="timeline-content">
+            <div class="timeline-icon fixed">🍽️</div>
+            <div class="timeline-details">
+              <div class="timeline-type">晚餐</div>
+              <div class="timeline-title">Kyoto Hamburger Steak "Conel"</div>
+              <div class="timeline-note"><strong>強烈建議提前透過官網系統訂位</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">20:00 - 21:00</span>
+          <div class="timeline-content">
+            <div class="timeline-icon attraction">🌃</div>
+            <div class="timeline-details">
+              <div class="timeline-type">景點</div>
+              <div class="timeline-title">鴨川夜間散步 ＆ 先斗町</div>
+              <div class="timeline-note">祇園一路逛到鴨川，感受京都獨特夜生活</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Day 7 -->
+    <section class="day-section" id="day7">
+      <div class="day-header">
+        <div class="day-number">
+          <span class="day-num-big">07</span>
+          <span class="day-num-label">DAY SEVEN</span>
+        </div>
+        <div class="day-info">
+          <h2 class="day-title">清水寺、敘敘苑與河原町採購</h2>
+          <p class="day-subtitle">10月2日（五）｜清水寺 → 敘敘苑 → 錦市場 → 河原町</p>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="timeline-time">08:30 - 11:00</span>
+          <div class="timeline-content">
+            <div class="timeline-icon attraction">⛩️</div>
+            <div class="timeline-details">
+              <div class="timeline-type">景點</div>
+              <div class="timeline-title">清水寺與周邊散步</div>
+              <div class="timeline-note">206 號公車至清水道，車程約 15 分鐘｜順著二年坂、三年坂石板路往山下漫步</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item highlight">
+          <span class="timeline-time">11:30 - 13:30</span>
+          <div class="timeline-content">
+            <div class="timeline-icon fixed">🥩</div>
+            <div class="timeline-details">
+              <div class="timeline-type">固定行程</div>
+              <div class="timeline-title">敘敘苑 JR京都伊勢丹店</div>
+              <div class="timeline-note">伊勢丹百貨 7 樓｜落地窗欣賞京都塔與市區風景｜<strong>務必提前預約</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">14:00 - 15:30</span>
+          <div class="timeline-content">
+            <div class="timeline-icon attraction">🏮</div>
+            <div class="timeline-details">
+              <div class="timeline-type">景點</div>
+              <div class="timeline-title">錦市場</div>
+              <div class="timeline-note">烏丸線四條站步行｜欣賞豐富食材，購買特色伴手禮（多數店家至 17:00）</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">15:30 - 18:30</span>
+          <div class="timeline-content">
+            <div class="timeline-icon activity">🛍️</div>
+            <div class="timeline-details">
+              <div class="timeline-type">採購</div>
+              <div class="timeline-title">河原町 / 祇園商圈</div>
+              <div class="timeline-note">新京極商店街與四條通｜藥妝、服飾大採購</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">18:30 - 20:00</span>
+          <div class="timeline-content">
+            <div class="timeline-icon food">🍣</div>
+            <div class="timeline-details">
+              <div class="timeline-type">晚餐</div>
+              <div class="timeline-title">四條 / 河原町一帶</div>
+              <div class="timeline-note">最後一晚｜搭地下鐵返回飯店打包行李</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Day 8 -->
+    <section class="day-section" id="day8">
+      <div class="day-header">
+        <div class="day-number">
+          <span class="day-num-big">08</span>
+          <span class="day-num-label">DAY EIGHT</span>
+        </div>
+        <div class="day-info">
+          <h2 class="day-title">滿載而歸</h2>
+          <p class="day-subtitle">10月3日（六）｜京都 → 關西機場 → 台灣</p>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="timeline-time">09:00 - 09:15</span>
+          <div class="timeline-content">
+            <div class="timeline-icon transport">🚶‍♂️</div>
+            <div class="timeline-details">
+              <div class="timeline-type">交通</div>
+              <div class="timeline-title">步行至京都車站</div>
+              <div class="timeline-note">拉著行李步行，辦理退房</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">09:30 - 10:50</span>
+          <div class="timeline-content">
+            <div class="timeline-icon transport">🚆</div>
+            <div class="timeline-details">
+              <div class="timeline-type">交通</div>
+              <div class="timeline-title">JR 特急 Haruka → 關西國際機場</div>
+              <div class="timeline-note">直達，車程約 80 分鐘｜確保 10:20 前抵達機場</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">10:50 - 11:20</span>
+          <div class="timeline-content">
+            <div class="timeline-icon activity">🧳</div>
+            <div class="timeline-details">
+              <div class="timeline-type">報到</div>
+              <div class="timeline-title">辦理報到與行李託運</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">12:20 - 14:15</span>
+          <div class="timeline-content">
+            <div class="timeline-icon transport">✈️</div>
+            <div class="timeline-details">
+              <div class="timeline-type">航班</div>
+              <div class="timeline-title">KIX 關西國際機場 → TPE 桃園國際機場</div>
+              <div class="timeline-note">中華航空 CI1563｜帶著美好的回憶平安返家！</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-flag">🇯🇵 → 🇹🇼</div>
+    <p>2025 日本關西 8 日之旅｜Osaka · Kyoto · Nara · Kobe · Himeji</p>
+  </footer>
+
+  <!-- Back to top -->
+  <button class="back-to-top" id="backToTop" aria-label="回到頂部">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 19V5M5 12l7-7 7 7"/>
+    </svg>
+  </button>
+
+  <script>
+    // Intersection Observer for day sections animation
+    const sections = document.querySelectorAll('.day-section');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    sections.forEach(section => observer.observe(section));
+
+    // Active tab tracking
+    const tabs = document.querySelectorAll('.day-tab');
+    const tabObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          const dayNum = id.replace('day', '');
+          tabs.forEach(tab => {
+            tab.classList.toggle('active', tab.dataset.day === dayNum);
+          });
+        }
+      });
+    }, { threshold: 0.5, rootMargin: '-100px 0px -50% 0px' });
+
+    sections.forEach(section => tabObserver.observe(section));
+
+    // Back to top button
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      backToTop.classList.toggle('visible', window.scrollY > 600);
+    }, { passive: true });
+
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Smooth scroll for nav tabs
+    tabs.forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector(tab.getAttribute('href'));
+        if (target) {
+          const offset = 80;
+          const top = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
